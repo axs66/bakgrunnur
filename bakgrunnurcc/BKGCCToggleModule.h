@@ -1,6 +1,4 @@
-#import <ControlCenterUIKit/CCUIToggleModule.h>
-#import <ControlCenterUI/CCUIModuleInstance.h>
-#import <ControlCenterUI/CCUIModuleInstanceManager.h>
+#import "ControlCenterUIKit.h"
 #import "BKGCCModuleContentViewController.h"
 
 @interface CCUIModuleInstanceManager (CCSupport)
