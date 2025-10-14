@@ -177,7 +177,7 @@ static void refreshSpecifiers() {
         
         //udevs
         PSSpecifier *createdByGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [createdByGroupSpec setProperty:@"由 udevs 开发" forKey:@"footerText"];
+        [createdByGroupSpec setProperty:@"由 Axs 修复支持ios15+ V1.8.0" forKey:@"footerText"];
         [createdByGroupSpec setProperty:@1 forKey:@"footerAlignment"];
         [rootSpecifiers addObject:createdByGroupSpec];
         
