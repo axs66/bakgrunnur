@@ -1,28 +1,3 @@
 #!/bin/bash
-
-JB_PREFIX=""
-if [ -d "/var/jb" ]; then
-    JB_PREFIX="/var/jb"
-fi
-
-BIN_PATH="$JB_PREFIX/usr/bin/bkg"
-DAEMON_PATH="$JB_PREFIX/usr/libexec/bkgd"
-PLIST_PATH="$JB_PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist"
-
-if [ -f "$BIN_PATH" ]; then
-    chown root:wheel "$BIN_PATH"
-    chmod +s "$BIN_PATH"
-fi
-
-echo "Initializing bkgd..."
-if [ -f "$DAEMON_PATH" ]; then
-    chown root:wheel "$DAEMON_PATH"
-    chmod 755 "$DAEMON_PATH"
-fi
-if [ -f "$PLIST_PATH" ]; then
-    chown root:wheel "$PLIST_PATH"
-    chmod 644 "$PLIST_PATH"
-    launchctl load "$PLIST_PATH" 2> /dev/null || true
-fi
-
+# Safe postinst for rootless: do not invoke launchctl, setuid, or execute helper binaries.
 exit 0
