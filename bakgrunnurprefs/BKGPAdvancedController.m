@@ -26,11 +26,11 @@ static void refreshSpecifiers() {
         
         //Show hidden applications
         PSSpecifier *showHiddenAppsGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [showHiddenAppsGroupSpec setProperty:@"Show hidden apps in Manage Apps. Requires reload of Settings." forKey:@"footerText"];
+        [showHiddenAppsGroupSpec setProperty:@"在“管理应用”中显示已隐藏的应用。更改后需要重新打开设置。" forKey:@"footerText"];
         [rootSpecifiers addObject:showHiddenAppsGroupSpec];
         
-        PSSpecifier *showHiddenAppsSpec = [PSSpecifier preferenceSpecifierNamed:@"Show Hidden Apps" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [showHiddenAppsSpec setProperty:@"Show Hidden Apps" forKey:@"label"];
+        PSSpecifier *showHiddenAppsSpec = [PSSpecifier preferenceSpecifierNamed:@"显示隐藏的应用" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [showHiddenAppsSpec setProperty:@"显示隐藏的应用" forKey:@"label"];
         [showHiddenAppsSpec setProperty:@"showHiddenApps" forKey:@"key"];
         [showHiddenAppsSpec setProperty:@NO forKey:@"default"];
         [showHiddenAppsSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
