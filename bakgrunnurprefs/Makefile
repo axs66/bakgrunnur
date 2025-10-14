@@ -8,8 +8,8 @@ BUNDLE_NAME = BakgrunnurPrefs
 BakgrunnurPrefs_FILES = $(wildcard *.m) ../BKGShared.mm
 BakgrunnurPrefs_INSTALL_PATH = /Library/PreferenceBundles
 BakgrunnurPrefs_FRAMEWORKS = UIKit
-BakgrunnurPrefs_LIBRARIES = AltList
 BakgrunnurPrefs_LDFLAGS += -Wl,-undefined,dynamic_lookup
+BakgrunnurPrefs_LDFLAGS += -L/var/jb/usr/lib -lAltList
 BakgrunnurPrefs_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)/bakgrunnurprefs
 
 include $(THEOS_MAKE_PATH)/bundle.mk
