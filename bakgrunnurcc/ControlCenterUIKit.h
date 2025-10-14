@@ -16,16 +16,18 @@ CGFloat CCUIMaximumExpandedContentModuleHeight();
 };
 #endif
 
-@class UIImage, UIColor, UIView, UIViewPropertyAnimator;
+@class UIImage, UIColor, UIView, UIViewPropertyAnimator, CCUIContentModuleContext;
 
 @interface CCUIButtonModuleView : UIView
+@property (nonatomic, assign, getter=isEnabled) BOOL enabled;
 @end
 
 @interface CCUIButtonModuleViewController : UIViewController
 @property (nonatomic,retain) UIImage * glyphImage;
 @property (nonatomic,retain) UIImage * selectedGlyphImage;
-@property (assign,nonatomic) BOOL selected;
-@property (assign,nonatomic) BOOL expanded;
+@property (nonatomic,retain) UIColor * selectedGlyphColor;
+@property (assign,nonatomic, getter=isSelected) BOOL selected;
+@property (assign,nonatomic, getter=isExpanded) BOOL expanded;
 @property (nonatomic,readonly) CCUIButtonModuleView * buttonView;
 @end
 
@@ -38,9 +40,7 @@ CGFloat CCUIMaximumExpandedContentModuleHeight();
 - (BOOL)isSelected;
 @end
 
-@interface CCUIContentModuleContext : NSObject
-- (instancetype)initWithModuleIdentifier:(NSString *)identifier;
-@end
+// CCUIContentModuleContext is provided by PrivateHeaders.h; avoid redefining to prevent duplicates.
 
 @interface CCUIModuleInstance : NSObject
 @property (nonatomic, strong) id module;
