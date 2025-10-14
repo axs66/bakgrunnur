@@ -7,7 +7,8 @@
 
 @implementation BKGActivator
 +(void)load{
-    dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
+    const char *libactivator = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/usr/lib/libactivator.dylib"] ? "/var/jb/usr/lib/libactivator.dylib" : "/usr/lib/libactivator.dylib";
+    dlopen(libactivator, RTLD_LAZY);
     if (objc_getClass("LAActivator")) { //libactivator is installed
         [self sharedInstance];
     }
@@ -97,7 +98,7 @@
 }
 
 -(NSString *)bakgrunnurIconPath{
-    return @"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/Bakgrunnur@3x.png";
+    return [[NSBundle bundleForClass:[self class]] pathForResource:@"Bakgrunnur@3x" ofType:@"png"];
 }
 
 - (NSData *)activator:(LAActivator *)activator requiresIconDataForListenerName:(NSString *)listenerName scale:(CGFloat *)scale{
