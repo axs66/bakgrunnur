@@ -28,12 +28,12 @@ static void refreshSpecifiers() {
         NSMutableArray *rootSpecifiers = [[NSMutableArray alloc] init];
         
         //Tweak
-        PSSpecifier *tweakEnabledGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"Tweak" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [tweakEnabledGroupSpec setProperty:@"No respring is required for changing this, it'll take effect whenever the app is launched or reactivated." forKey:@"footerText"];
+        PSSpecifier *tweakEnabledGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"功能" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+        [tweakEnabledGroupSpec setProperty:@"无需重启，修改会在应用启动或切回时生效。" forKey:@"footerText"];
         [rootSpecifiers addObject:tweakEnabledGroupSpec];
         
-        PSSpecifier *tweakEnabledSpec = [PSSpecifier preferenceSpecifierNamed:@"Enabled" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [tweakEnabledSpec setProperty:@"Enabled" forKey:@"label"];
+        PSSpecifier *tweakEnabledSpec = [PSSpecifier preferenceSpecifierNamed:@"启用" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [tweakEnabledSpec setProperty:@"启用" forKey:@"label"];
         [tweakEnabledSpec setProperty:@"enabled" forKey:@"key"];
         [tweakEnabledSpec setProperty:@YES forKey:@"default"];
         [tweakEnabledSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -45,10 +45,10 @@ static void refreshSpecifiers() {
         [rootSpecifiers addObject:blankSpecGroup];
         
         //Manage Apps
-        PSSpecifier *altListSpec = [PSSpecifier preferenceSpecifierNamed:@"Manage Apps" target:nil set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:NSClassFromString(@"BKGPApplicationListSubcontrollerController") cell:PSLinkListCell edit:nil];
+        PSSpecifier *altListSpec = [PSSpecifier preferenceSpecifierNamed:@"管理应用" target:nil set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:NSClassFromString(@"BKGPApplicationListSubcontrollerController") cell:PSLinkListCell edit:nil];
         [altListSpec setProperty:@"BKGPAppEntryController" forKey:@"subcontrollerClass"];
-        [altListSpec setProperty:@"Manage Apps" forKey:@"label"];
-        NSString *sectionType = boolValueForKey(@"showHiddenApps", NO) ? @"All" : @"Visible";
+        [altListSpec setProperty:@"管理应用" forKey:@"label"];
+        NSString *sectionType = boolValueForKey(@"showHiddenApps", NO) ? @"全部" : @"可见";
         [altListSpec setProperty:@[
             @{@"sectionType":sectionType},
         ] forKey:@"sections"];
@@ -60,12 +60,12 @@ static void refreshSpecifiers() {
         [rootSpecifiers addObject:altListSpec];
         
         //accessory type
-        PSSpecifier *homescreenGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"Homescreen" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [homescreenGroupSpec setProperty:@"Set the indicator on homescreen when app is backgrounding. If dot is preferred, newly installed or recently updated apps' native dot will be overriden to hide." forKey:@"footerText"];
+        PSSpecifier *homescreenGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"主屏幕" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+        [homescreenGroupSpec setProperty:@"当应用在后台运行时显示指示器。若选择圆点，新装或刚更新应用的系统圆点将被覆盖隐藏。" forKey:@"footerText"];
         [rootSpecifiers addObject:homescreenGroupSpec];
         
-        PSSpecifier *preferredAccessoryTypeSelectionSpec = [PSSpecifier preferenceSpecifierNamed:@"Retire" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSegmentCell edit:nil];
-        [preferredAccessoryTypeSelectionSpec setValues:@[@0, @2, @4] titles:@[@"Disable", @"Dot", @"Sandglass"]];
+        PSSpecifier *preferredAccessoryTypeSelectionSpec = [PSSpecifier preferenceSpecifierNamed:@"指示样式" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSegmentCell edit:nil];
+        [preferredAccessoryTypeSelectionSpec setValues:@[@0, @2, @4] titles:@[@"关闭", @"圆点", @"沙漏"]];
         [preferredAccessoryTypeSelectionSpec setProperty:@2 forKey:@"default"];
         [preferredAccessoryTypeSelectionSpec setProperty:@"preferredAccessoryType" forKey:@"key"];
         [preferredAccessoryTypeSelectionSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -73,8 +73,8 @@ static void refreshSpecifiers() {
         [rootSpecifiers addObject:preferredAccessoryTypeSelectionSpec];
         
         //dock
-        PSSpecifier *showIndicatorOnDockSpec = [PSSpecifier preferenceSpecifierNamed:@"Dock Indicator" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [showIndicatorOnDockSpec setProperty:@"Dock Indicator" forKey:@"label"];
+        PSSpecifier *showIndicatorOnDockSpec = [PSSpecifier preferenceSpecifierNamed:@"Dock 指示器" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [showIndicatorOnDockSpec setProperty:@"Dock 指示器" forKey:@"label"];
         [showIndicatorOnDockSpec setProperty:@"showIndicatorOnDock" forKey:@"key"];
         [showIndicatorOnDockSpec setProperty:@YES forKey:@"default"];
         [showIndicatorOnDockSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -98,20 +98,20 @@ static void refreshSpecifiers() {
         
         //force touch shortcut
         PSSpecifier *forceTouchShortcutGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [forceTouchShortcutGroupSpec setProperty:@"Show shortcuts for enabling or disabling Bakgrunnur for each individual app via quick actions menu in homescreen." forKey:@"footerText"];
+        [forceTouchShortcutGroupSpec setProperty:@"在主屏幕快捷操作里为每个应用显示启用/禁用开关。" forKey:@"footerText"];
         [rootSpecifiers addObject:forceTouchShortcutGroupSpec];
         
-        PSSpecifier *forceTouchShortcutSpec = [PSSpecifier preferenceSpecifierNamed:@"Quick Actions" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPQuickActionsController") cell:PSLinkCell edit:nil];
+        PSSpecifier *forceTouchShortcutSpec = [PSSpecifier preferenceSpecifierNamed:@"快捷操作" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPQuickActionsController") cell:PSLinkCell edit:nil];
         [rootSpecifiers addObject:forceTouchShortcutSpec];
         
         //banner
         if (@available(iOS 14.0, *)){
             PSSpecifier *presentBannerGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-            [presentBannerGroupSpec setProperty:@"Show banner when apps being handled by Bakgrunnur." forKey:@"footerText"];
+            [presentBannerGroupSpec setProperty:@"当 Bakgrunnur 处理应用时显示横幅提示。" forKey:@"footerText"];
             [rootSpecifiers addObject:presentBannerGroupSpec];
 
-            PSSpecifier *presentBannerSpec = [PSSpecifier preferenceSpecifierNamed:@"Banners" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-            [presentBannerSpec setProperty:@"Banners" forKey:@"label"];
+            PSSpecifier *presentBannerSpec = [PSSpecifier preferenceSpecifierNamed:@"横幅提示" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+            [presentBannerSpec setProperty:@"横幅提示" forKey:@"label"];
             [presentBannerSpec setProperty:@"presentBanner" forKey:@"key"];
             [presentBannerSpec setProperty:@YES forKey:@"default"];
             [presentBannerSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -123,19 +123,19 @@ static void refreshSpecifiers() {
         [rootSpecifiers addObject:blankSpecGroup];
 
         //Advanced
-        PSSpecifier *advancedGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"Others" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+        PSSpecifier *advancedGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"其他" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
         [rootSpecifiers addObject:advancedGroupSpec];
         
-        PSSpecifier *advancedSpec = [PSSpecifier preferenceSpecifierNamed:@"Advanced" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAdvancedController") cell:PSLinkCell edit:nil];
+        PSSpecifier *advancedSpec = [PSSpecifier preferenceSpecifierNamed:@"高级" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAdvancedController") cell:PSLinkCell edit:nil];
         [rootSpecifiers addObject:advancedSpec];
         
         //reset
         PSSpecifier *resetGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [resetGroupSpec setProperty:@"Reset everything to default." forKey:@"footerText"];
+        [resetGroupSpec setProperty:@"重置所有设置为默认值。" forKey:@"footerText"];
         [rootSpecifiers addObject:resetGroupSpec];
         
-        PSSpecifier *resetSpec = [PSSpecifier preferenceSpecifierNamed:@"Reset" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
-        [resetSpec setProperty:@"Reset" forKey:@"label"];
+        PSSpecifier *resetSpec = [PSSpecifier preferenceSpecifierNamed:@"重置" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+        [resetSpec setProperty:@"重置" forKey:@"label"];
         [resetSpec setButtonAction:@selector(reset)];
         [rootSpecifiers addObject:resetSpec];
         
@@ -143,37 +143,37 @@ static void refreshSpecifiers() {
         [rootSpecifiers addObject:blankSpecGroup];
         
         //Support Dev
-        PSSpecifier *supportDevGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"Development" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+        PSSpecifier *supportDevGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"开发支持" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
         [rootSpecifiers addObject:supportDevGroupSpec];
         
-        PSSpecifier *supportDevSpec = [PSSpecifier preferenceSpecifierNamed:@"Support Development" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
-        [supportDevSpec setProperty:@"Support Development" forKey:@"label"];
+        PSSpecifier *supportDevSpec = [PSSpecifier preferenceSpecifierNamed:@"支持开发者" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+        [supportDevSpec setProperty:@"支持开发者" forKey:@"label"];
         [supportDevSpec setButtonAction:@selector(donation)];
         [supportDevSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/PayPal.png"] forKey:@"iconImage"];
         [rootSpecifiers addObject:supportDevSpec];
         
         
         //Contact
-        PSSpecifier *contactGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"Contact" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+        PSSpecifier *contactGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"联系" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
         [rootSpecifiers addObject:contactGroupSpec];
         
         //Twitter
-        PSSpecifier *twitterSpec = [PSSpecifier preferenceSpecifierNamed:@"Twitter" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
-        [twitterSpec setProperty:@"Twitter" forKey:@"label"];
+        PSSpecifier *twitterSpec = [PSSpecifier preferenceSpecifierNamed:@"推特" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+        [twitterSpec setProperty:@"推特" forKey:@"label"];
         [twitterSpec setButtonAction:@selector(twitter)];
         [twitterSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/Twitter.png"] forKey:@"iconImage"];
         [rootSpecifiers addObject:twitterSpec];
         
         //Reddit
         PSSpecifier *redditSpec = [PSSpecifier preferenceSpecifierNamed:@"Reddit" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
-        [redditSpec setProperty:@"Twitter" forKey:@"label"];
+        [redditSpec setProperty:@"Reddit" forKey:@"label"];
         [redditSpec setButtonAction:@selector(reddit)];
         [redditSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/Reddit.png"] forKey:@"iconImage"];
         [rootSpecifiers addObject:redditSpec];
         
         //udevs
         PSSpecifier *createdByGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [createdByGroupSpec setProperty:@"Created by udevs" forKey:@"footerText"];
+        [createdByGroupSpec setProperty:@"由 udevs 开发" forKey:@"footerText"];
         [createdByGroupSpec setProperty:@1 forKey:@"footerAlignment"];
         [rootSpecifiers addObject:createdByGroupSpec];
         
@@ -238,20 +238,20 @@ static void refreshSpecifiers() {
     
     self.table.tableHeaderView = headerView;
     
-    self.respringBtn = [[UIBarButtonItem alloc] initWithTitle:@"Respring" style:UIBarButtonItemStylePlain target:self action:@selector(respring)];
+    self.respringBtn = [[UIBarButtonItem alloc] initWithTitle:@"重启 SpringBoard" style:UIBarButtonItemStylePlain target:self action:@selector(respring)];
     self.navigationItem.rightBarButtonItem = self.respringBtn;
 }
 
 -(void)reset{
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Bakgrunnur" message:@"Reset everything back to default?" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Bakgrunnur" message:@"确定要重置为默认设置？" preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSError *error = nil;
         [[NSFileManager defaultManager] removeItemAtPath:PREFS_PATH error:&error];
         if ((error != nil || error != NULL) && [[NSFileManager defaultManager] fileExistsAtPath:PREFS_PATH]){
-            UIAlertController *alertFailed = [UIAlertController alertControllerWithTitle:@"Bakgrunnur" message:[NSString stringWithFormat:@"Failed to reset. %@", error.localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UIAlertController *alertFailed = [UIAlertController alertControllerWithTitle:@"Bakgrunnur" message:[NSString stringWithFormat:@"重置失败：%@", error.localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             }];
             [alertFailed addAction:okAction];
             
@@ -266,7 +266,7 @@ static void refreshSpecifiers() {
         }
     }];
     
-    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
     }];
     
     [alert addAction:yesAction];
@@ -297,16 +297,16 @@ static void refreshSpecifiers() {
 
 -(void)respring{
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Bakgrunnur" message:@"Respring is not necessary, respring anyway?" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Bakgrunnur" message:@"无需重启，是否仍要重启 SpringBoard？" preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self runCommand:@"/usr/bin/bkg --privatekillbkgd"];
         NSURL *relaunchURL = [NSURL URLWithString:@"prefs:root=Bakgrunnur"];
         SBSRelaunchAction *restartAction = [NSClassFromString(@"SBSRelaunchAction") actionWithReason:@"RestartRenderServer" options:4 targetURL:relaunchURL];
         [[NSClassFromString(@"FBSSystemService") sharedService] sendActions:[NSSet setWithObject:restartAction] withResult:nil];
     }];
     
-    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
     }];
     
     [alert addAction:yesAction];
