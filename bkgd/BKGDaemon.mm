@@ -312,7 +312,7 @@ static IOPMAssertionID sleepingAssertionID;
         NSMutableArray *taskArgs = [[NSMutableArray alloc] init];
         taskArgs = [NSMutableArray arrayWithObjects:@"-c", cmd, nil];
         NSTask * task = [[NSTask alloc] init];
-        [task setLaunchPath:@"/bin/bash"];
+        [task setLaunchPath:@"/bin/sh"];
         [task setArguments:taskArgs];
         NSPipe* outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
