@@ -88,7 +88,8 @@ void display_usage(){
 
 // Platformize binary
 void platformize_me() {
-    void* handle = dlopen("/usr/lib/libjailbreak.dylib", RTLD_LAZY);
+    const char *libjb = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/usr/lib/libjailbreak.dylib"] ? "/var/jb/usr/lib/libjailbreak.dylib" : "/usr/lib/libjailbreak.dylib";
+    void* handle = dlopen(libjb, RTLD_LAZY);
     if (!handle) return;
     
     // Reset errors
@@ -104,7 +105,8 @@ void platformize_me() {
 
 // Patch setuid
 void patch_setuid() {
-    void* handle = dlopen("/usr/lib/libjailbreak.dylib", RTLD_LAZY);
+    const char *libjb2 = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/usr/lib/libjailbreak.dylib"] ? "/var/jb/usr/lib/libjailbreak.dylib" : "/usr/lib/libjailbreak.dylib";
+    void* handle = dlopen(libjb2, RTLD_LAZY);
     if (!handle) return;
     
     // Reset errors
@@ -135,7 +137,8 @@ static NSDictionary* runCommand(NSString *cmd){
         NSMutableArray *taskArgs = [[NSMutableArray alloc] init];
         taskArgs = [NSMutableArray arrayWithObjects:@"-c", cmd, nil];
         NSTask * task = [[NSTask alloc] init];
-        [task setLaunchPath:@"/bin/bash"];
+        // Prefer /bin/sh for better availability on rootless; bash may not exist
+        [task setLaunchPath:@"/bin/sh"];
         [task setArguments:taskArgs];
         NSPipe* outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
