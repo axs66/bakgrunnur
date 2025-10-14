@@ -32,10 +32,7 @@ static void refreshSpecifiers() {
 
 - (void)loadPreferences{
     [self updateIvars];
-    
-#if __has_include(<AltList/ATLApplicationListSubcontrollerController.h>)
     [super loadPreferences];
-#endif
 }
 
 - (NSString*)previewStringForApplicationWithIdentifier:(NSString *)applicationID{
