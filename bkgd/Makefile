@@ -8,7 +8,7 @@ include $(THEOS)/makefiles/common.mk
 TOOL_NAME = bkgd
 
 bkgd_FILES = $(wildcard *.mm)
-bkgd_CFLAGS = -fobjc-arc
+bkgd_CFLAGS = -fobjc-arc -Wno-module-import-in-extern-c
 bkgd_CODESIGN_FLAGS = -Sentitlements.plist
 bkgd_INSTALL_PATH = /usr/libexec
 bkgd_PRIVATE_FRAMEWORKS = IOKit
