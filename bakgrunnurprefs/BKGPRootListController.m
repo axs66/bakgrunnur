@@ -149,7 +149,9 @@ static void refreshSpecifiers() {
         PSSpecifier *supportDevSpec = [PSSpecifier preferenceSpecifierNamed:@"关注抖音" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
         [supportDevSpec setProperty:@"关注抖音" forKey:@"label"];
         [supportDevSpec setButtonAction:@selector(donation)];
-        [supportDevSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/PayPal.png"] forKey:@"iconImage"];
+        NSBundle *prefsBundle = [NSBundle bundleForClass:[self class]];
+        NSString *paypalPath = [prefsBundle pathForResource:@"PayPal" ofType:@"png"];
+        [supportDevSpec setProperty:[UIImage imageWithContentsOfFile:paypalPath] forKey:@"iconImage"];
         [rootSpecifiers addObject:supportDevSpec];
         
         
@@ -161,14 +163,16 @@ static void refreshSpecifiers() {
         PSSpecifier *twitterSpec = [PSSpecifier preferenceSpecifierNamed:@"Sileo越狱源" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
         [twitterSpec setProperty:@"Sileo越狱源" forKey:@"label"];
         [twitterSpec setButtonAction:@selector(twitter)];
-        [twitterSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/Twitter.png"] forKey:@"iconImage"];
+        NSString *twitterIconPath = [prefsBundle pathForResource:@"Twitter" ofType:@"png"];
+        [twitterSpec setProperty:[UIImage imageWithContentsOfFile:twitterIconPath] forKey:@"iconImage"];
         [rootSpecifiers addObject:twitterSpec];
         
         //Reddit
         PSSpecifier *redditSpec = [PSSpecifier preferenceSpecifierNamed:@"TG分享频道" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
         [redditSpec setProperty:@"TG分享频道" forKey:@"label"];
         [redditSpec setButtonAction:@selector(reddit)];
-        [redditSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/Reddit.png"] forKey:@"iconImage"];
+        NSString *redditIconPath = [prefsBundle pathForResource:@"Reddit" ofType:@"png"];
+        [redditSpec setProperty:[UIImage imageWithContentsOfFile:redditIconPath] forKey:@"iconImage"];
         [rootSpecifiers addObject:redditSpec];
         
         //udevs
@@ -217,8 +221,8 @@ static void refreshSpecifiers() {
     headerView.backgroundColor = [UIColor colorWithRed: 1.00 green: 0.29 blue: 0.61 alpha: 1.00];
     
     
-    UIImage *headerImage = [[UIImage alloc]
-                            initWithContentsOfFile:[[NSBundle bundleWithPath:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle"] pathForResource:@"Bakgrunnur512" ofType:@"png"]];
+    NSBundle *prefsBundle2 = [NSBundle bundleForClass:[self class]];
+    UIImage *headerImage = [[UIImage alloc] initWithContentsOfFile:[prefsBundle2 pathForResource:@"Bakgrunnur512" ofType:@"png"]];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:Imageframe];
     [imageView setImage:headerImage];
     [imageView setContentMode:UIViewContentModeScaleAspectFit];
