@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     paths:
@@ -16,11 +17,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          submodules: true
 
       - name: Use Theos Setup Action
         uses: axs66/theos-action@main
 
-      # ✅ 拉取 Preferences.framework 仓库
+      # ✅ 拉取 Preferences.framework 到 Theos 默认库路径
       - name: Clone Preferences.framework
         run: |
           git clone --depth=1 https://github.com/axs66/Preferences.framework.git $THEOS/lib/Preferences.framework
@@ -30,6 +33,7 @@ jobs:
 
       - name: Build DEB (rootless + roothide)
         run: |
+          make clean
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
 
