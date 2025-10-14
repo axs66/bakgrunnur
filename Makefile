@@ -15,6 +15,7 @@ TWEAK_NAME = Bakgrunnur
 $(TWEAK_NAME)_FILES = $(wildcard *.xm) $(wildcard *.mm)
 $(TWEAK_NAME)_CFLAGS = -fobjc-arc
 $(TWEAK_NAME)_FRAMEWORKS = UIKit QuartzCore
+$(TWEAK_NAME)_LIBRARIES += proc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += bkg
