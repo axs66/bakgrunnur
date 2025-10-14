@@ -146,15 +146,3 @@ static void refreshSpecifiers() {
     }
 }
 @end
-
-#if !__has_include(<AltList/ATLApplicationListSubcontrollerController.h>)
-@implementation ATLApplicationListSubcontrollerController
-- (PSSpecifier *)specifierForApplicationWithIdentifier:(NSString *)identifier{
-    return nil;
-}
-
-- (NSString*)previewStringForApplicationWithIdentifier:(NSString*)applicationID{
-    return @"";
-}
-@end
-#endif
