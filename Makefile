@@ -23,3 +23,6 @@ SUBPROJECTS += bakgrunnurprefs
 SUBPROJECTS += bakgrunnurcc
 SUBPROJECTS += bkgd
 include $(THEOS_MAKE_PATH)/aggregate.mk
+
+before-package::
+	chmod 755 layout/DEBIAN/postinst
