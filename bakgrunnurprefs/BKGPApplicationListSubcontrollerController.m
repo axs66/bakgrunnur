@@ -51,18 +51,18 @@ static void refreshSpecifiers() {
     
     if (seconds < 60){
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@ %@", [formatter stringFromNumber:@(seconds)], seconds > 1 ? @"secs" : @"sec"];
+        return [NSString stringWithFormat:@"%@秒", [formatter stringFromNumber:@(seconds)]];
     }else if (seconds < 3600){
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@ %@", [formatter stringFromNumber:@(seconds/60.0)], seconds/60.0 > 1 ? @"mins" : @"min"];
+        return [NSString stringWithFormat:@"%@分钟", [formatter stringFromNumber:@(seconds/60.0)]];
     }else if (fmod(seconds, 60.0) > 0){
         formatter.numberStyle = NSNumberFormatterDecimalStyle;
         formatter.maximumFractionDigits = 1;
         formatter.roundingMode = NSNumberFormatterRoundUp;
-        return [NSString stringWithFormat:@"%@ %@", [formatter stringFromNumber:@(seconds/3600.0)], seconds/3600.0 > 1 ? @"hours" : @"hour"];
+        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)]];
     }else{
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@ %@", [formatter stringFromNumber:@(seconds/3600.0)], seconds/3600.0 > 1 ? @"hours" : @"hour"];
+        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)]];
     }
 }
 
@@ -114,7 +114,7 @@ static void refreshSpecifiers() {
     
     BOOL darkWake = boolValueForConfigKeyWithPrefsAndIndex(@"darkWake", NO, _prefs, identifierIdx);
     if (darkWake){
-        [verboseArray addObject:@"Wake"];
+        [verboseArray addObject:@"唤醒"];
     }
     
     if (verboseArray.count > 0){
@@ -133,16 +133,16 @@ static void refreshSpecifiers() {
     
     switch (backgroundType) {
         case BKGBackgroundTypeTerminate:{
-            return @"Terminate";
+            return @"终止";
         }
         case BKGBackgroundTypeRetire:{
-            return @"Retire";
+            return @"挂起";
         }
         case BKGBackgroundTypeImmortal:{
-            return @"Immortal";
+            return @"常驻";
         }
         case BKGBackgroundTypeAdvanced:{
-            return @"Advanced";
+            return @"高级";
         }
         default:
             return @"";
