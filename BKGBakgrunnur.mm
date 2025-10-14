@@ -5,8 +5,7 @@
 #import <mach/mach.h>
 #import <dlfcn.h>
 #import <objc/runtime.h>
-#import <libproc/libproc.h>
-#import <libproc/libproc_internal.h>
+#import "bkg_libproc_compat.h"
 #import "Vexillarius.h"
 
 //static NSDictionary *prefs;
