@@ -1,13 +1,28 @@
 #!/bin/bash
 
-chown root:wheel /usr/bin/bkg
-chmod +s /usr/bin/bkg
+JB_PREFIX=""
+if [ -d "/var/jb" ]; then
+    JB_PREFIX="/var/jb"
+fi
+
+BIN_PATH="$JB_PREFIX/usr/bin/bkg"
+DAEMON_PATH="$JB_PREFIX/usr/libexec/bkgd"
+PLIST_PATH="$JB_PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist"
+
+if [ -f "$BIN_PATH" ]; then
+    chown root:wheel "$BIN_PATH"
+    chmod +s "$BIN_PATH"
+fi
 
 echo "Initializing bkgd..."
-chown root:wheel /usr/libexec/bkgd
-chmod 755 /usr/libexec/bkgd
-chown root:wheel /Library/LaunchDaemons/com.udevs.bkgd.plist
-chmod 644 /Library/LaunchDaemons/com.udevs.bkgd.plist
-launchctl load /Library/LaunchDaemons/com.udevs.bkgd.plist 2> /dev/null
+if [ -f "$DAEMON_PATH" ]; then
+    chown root:wheel "$DAEMON_PATH"
+    chmod 755 "$DAEMON_PATH"
+fi
+if [ -f "$PLIST_PATH" ]; then
+    chown root:wheel "$PLIST_PATH"
+    chmod 644 "$PLIST_PATH"
+    launchctl load "$PLIST_PATH" 2> /dev/null || true
+fi
 
 exit 0
