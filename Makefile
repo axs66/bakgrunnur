@@ -25,4 +25,7 @@ SUBPROJECTS += bkgd
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 before-package::
-	chmod 755 layout/DEBIAN/postinst
+	chmod 755 layout/DEBIAN/postinst || true
+	chmod 755 layout/DEBIAN/prerm || true
+	chmod 755 $(THEOS_STAGING_DIR)/DEBIAN/postinst || true
+	chmod 755 $(THEOS_STAGING_DIR)/DEBIAN/prerm || true
