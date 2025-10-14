@@ -13,4 +13,5 @@
 @property (nonatomic, assign) BOOL expandOnTap;
 -(void)updateState;
 -(void)updateStateViaPreferences;
+-(void)setSelected:(BOOL)selected;
 @end
