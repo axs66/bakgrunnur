@@ -23,17 +23,6 @@ jobs:
       - name: Use Theos Setup Action
         uses: axs66/theos-action@main
 
-      # ✅ 拉取 Preferences.framework 的必要部分
-      - name: Clone Preferences.framework (sparse)
-        run: |
-          git clone --depth=1 --filter=blob:none --sparse https://github.com/axs66/Preferences.framework.git $GITHUB_WORKSPACE/Preferences.framework
-          cd $GITHUB_WORKSPACE/Preferences.framework
-          git sparse-checkout set Headers Preferences
-          # 确保 Theos 的 lib 路径存在
-          mkdir -p $THEOS/lib
-          # 拷贝框架到 Theos 可识别位置
-          cp -R $GITHUB_WORKSPACE/Preferences.framework $THEOS/lib/Preferences.framework
-
       - name: Clean previous packages
         run: rm -f ${{ github.workspace }}/packages/*.deb
 
