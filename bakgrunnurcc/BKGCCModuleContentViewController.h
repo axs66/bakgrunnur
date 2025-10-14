@@ -1,5 +1,4 @@
-#import <ControlCenterUIKit/CCUIButtonModuleViewController.h>
-#import <ControlCenterUIKit/CCUIMenuModuleViewController.h>
+#import "ControlCenterUIKit.h"
 
 
 @class BKGCCToggleModule;
