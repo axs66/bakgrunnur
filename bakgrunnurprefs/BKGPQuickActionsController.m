@@ -19,7 +19,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section{
     switch (section) {
         case 0:
-            return @"Master switch will take precedence over Once. The latter will dynamically hide when master switch is enabled. Token for Once switch will be revoked when the app is active again.";
+            return @"主开关优先生效，会在开启时隐藏“一次性”开关；当应用再次激活时，“一次性”令牌会被撤销。";
         default:
             return @"";
             
@@ -48,13 +48,13 @@
             switch (indexPath.row) {
                 case 0:{
                     BOOL enabled = [[self readPreferenceValueForKey:@"quickActionMaster" defaultValue:@YES] boolValue];
-                    cell.textLabel.text = @"Master - Enable/Disable";
+                    cell.textLabel.text = @"主开关 - 启用/禁用";
                     cell.accessoryType = enabled ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
                     break;
                 }
                 case 1:{
                     BOOL enabled = [[self readPreferenceValueForKey:@"quickActionOnce" defaultValue:@NO] boolValue];
-                    cell.textLabel.text = @"Once - Enable/Disable";
+                    cell.textLabel.text = @"一次性 - 启用/禁用";
                     cell.accessoryType = enabled ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
                     break;
                 }
@@ -133,7 +133,7 @@
     self.tableView.allowsMultipleSelection = YES;
     //self.tableView.allowsSelectionDuringEditing=YES;
     
-    self.title = @"Quick Actions";
+    self.title = @"快捷操作";
     self.view = self.tableView;
 }
 @end
