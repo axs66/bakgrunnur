@@ -16,6 +16,41 @@ CGFloat CCUIMaximumExpandedContentModuleHeight();
 };
 #endif
 
+@class UIImage, UIColor, UIView, UIViewPropertyAnimator;
+
+@interface CCUIButtonModuleView : UIView
+@end
+
+@interface CCUIButtonModuleViewController : UIViewController
+@property (nonatomic,retain) UIImage * glyphImage;
+@property (nonatomic,retain) UIImage * selectedGlyphImage;
+@property (assign,nonatomic) BOOL selected;
+@property (assign,nonatomic) BOOL expanded;
+@property (nonatomic,readonly) CCUIButtonModuleView * buttonView;
+@end
+
+@interface CCUIMenuModuleViewController : CCUIButtonModuleViewController
+@end
+
+@interface CCUIToggleModule : NSObject
+- (void)refreshState;
+- (UIColor *)selectedColor;
+- (BOOL)isSelected;
+@end
+
+@interface CCUIContentModuleContext : NSObject
+- (instancetype)initWithModuleIdentifier:(NSString *)identifier;
+@end
+
+@interface CCUIModuleInstance : NSObject
+@property (nonatomic, strong) id module;
+@end
+
+@interface CCUIModuleInstanceManager : NSObject
++ (instancetype)sharedInstance;
+- (void)requestExpandModuleForContentModuleContext:(CCUIContentModuleContext *)context;
+@end
+
 @interface CCUIMenuModuleItem : NSObject
 @property (nonatomic,copy) NSString * identifier;
 @property (nonatomic,copy) NSString * title;
