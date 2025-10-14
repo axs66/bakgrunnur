@@ -1,9 +1,20 @@
 #!/bin/bash
 
+JB_PREFIX=""
+if [ -d "/var/jb" ]; then
+    JB_PREFIX="/var/jb"
+fi
+
 echo "Restoring original state..."
-/usr/bin/bkg --privatepreming
+BIN_PATH="$JB_PREFIX/usr/bin/bkg"
+if [ -x "$BIN_PATH" ]; then
+    "$BIN_PATH" --privatepreming || true
+fi
 
 echo "Killing bkgd..."
-launchctl unload /Library/LaunchDaemons/com.udevs.bkgd.plist 2> /dev/null
+PLIST_PATH="$JB_PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist"
+if [ -f "$PLIST_PATH" ]; then
+    launchctl unload "$PLIST_PATH" 2> /dev/null || true
+fi
 
 exit 0
