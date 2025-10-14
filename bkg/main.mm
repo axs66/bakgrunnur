@@ -1,7 +1,7 @@
 #import <stdio.h>
 #import <getopt.h>
 #import "../common.h"
-#import <NSTask.h>
+#import "NSTask.h"
 #import <dlfcn.h>
 #import "../BKGShared.h"
 
