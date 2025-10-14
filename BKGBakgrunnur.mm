@@ -682,7 +682,8 @@
 
 -(const char *)fullImagePathNamed:(const char*)name ext:(const char*)fileExt mode:(int)mode{
 	static char str[128];
-	snprintf(str, sizeof(str), "/Library/Application Support/Bakgrunnur.bundle/%s-%s.%s", name, (mode==0 ? "Light" : "Dark"), fileExt);
+    NSString *bundlePath = [[NSBundle bundleForClass:[self class]] bundlePath];
+    snprintf(str, sizeof(str), "%s/%s-%s.%s", [bundlePath UTF8String], name, (mode==0 ? "Light" : "Dark"), fileExt);
 	return str;
 }
 
