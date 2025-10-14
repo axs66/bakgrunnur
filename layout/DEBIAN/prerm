@@ -1,20 +1,3 @@
 #!/bin/bash
-
-JB_PREFIX=""
-if [ -d "/var/jb" ]; then
-    JB_PREFIX="/var/jb"
-fi
-
-echo "Restoring original state..."
-BIN_PATH="$JB_PREFIX/usr/bin/bkg"
-if [ -x "$BIN_PATH" ]; then
-    "$BIN_PATH" --privatepreming || true
-fi
-
-echo "Killing bkgd..."
-PLIST_PATH="$JB_PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist"
-if [ -f "$PLIST_PATH" ]; then
-    launchctl unload "$PLIST_PATH" 2> /dev/null || true
-fi
-
+# Safe prerm for rootless: do not invoke helper binaries or launchctl.
 exit 0
