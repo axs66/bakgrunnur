@@ -32,11 +32,7 @@ static void refreshSpecifiers() {
 
 - (void)loadPreferences{
     [self updateIvars];
-    
-    // Check if AltList is available at runtime
-    if (NSClassFromString(@"ATLApplicationListSubcontrollerController")) {
-        [super loadPreferences];
-    }
+    [super loadPreferences];
 }
 
 - (NSString*)previewStringForApplicationWithIdentifier:(NSString *)applicationID{
