@@ -10,6 +10,7 @@ TOOL_NAME = bkgd
 bkgd_FILES = $(wildcard *.mm)
 bkgd_CFLAGS = -fobjc-arc -Wno-module-import-in-extern-c
 bkgd_CODESIGN_FLAGS = -Sentitlements.plist
+# Rootless-safe install path; packaging scripts will handle runtime prefix
 bkgd_INSTALL_PATH = /usr/libexec
 bkgd_PRIVATE_FRAMEWORKS = IOKit
 
