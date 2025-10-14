@@ -1,9 +1,9 @@
 Package: com.axs.bakgrunnur
 Name: Bakgrunnur 应用真后台
-Depends: mobilesubstrate (>= 0.9.5000), firmware(>=13.0), com.opa334.ccsupport, com.opa334.altlist, com.udevs.vexillarius | firmware(<<14.0)
+Depends: mobilesubstrate (>= 0.9.5000), com.opa334.ccsupport, com.opa334.altlist
 Version: 1.7.13
 Architecture: iphoneos-arm
-Description: Bakgrunnur is a backgrounding (or should I say foregrounding) tweak that will make your apps run infinitely in the background. It even works when your device is locked! Good thing about Bakgrunnur is that you have total control over how your apps should run. When people say they want the apps to run forever in the background, they don't really mean what they mean. Most of the time they want the apps to run in the background for a certain duration before it's being terminated by iOS. Bakgrunnur can do just that!
+Description: Truly backgrounding your apps
 Maintainer: Axs
 Author: udevs & Axs
 Section: 系统增强
