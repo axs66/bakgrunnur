@@ -8,9 +8,12 @@ TARGET = iphone:clang:latest:14.5
 BUNDLE_NAME = Bakgrunnur
 Bakgrunnur_BUNDLE_EXTENSION = bundle
 Bakgrunnur_FILES = $(wildcard *.m) ../BKGShared.mm
+Bakgrunnur_PRIVATE_FRAMEWORKS = ControlCenterUIKit Preferences
 Bakgrunnur_FRAMEWORKS = UIKit QuartzCore
 Bakgrunnur_INSTALL_PATH = /Library/ControlCenter/Bundles/
 Bakgrunnur_LDFLAGS += -Wl,-undefined,dynamic_lookup
+Bakgrunnur_LDFLAGS += -F/var/jb/System/Library/PrivateFrameworks
+Bakgrunnur_LDFLAGS += -F/System/Library/PrivateFrameworks
 Bakgrunnur_CFLAGS = -fobjc-arc
 
 after-install::
