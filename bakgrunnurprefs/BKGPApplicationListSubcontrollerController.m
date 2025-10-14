@@ -152,5 +152,9 @@ static void refreshSpecifiers() {
 - (PSSpecifier *)specifierForApplicationWithIdentifier:(NSString *)identifier{
     return nil;
 }
+
+- (NSString*)previewStringForApplicationWithIdentifier:(NSString*)applicationID{
+    return @"";
+}
 @end
 #endif
