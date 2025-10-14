@@ -146,8 +146,8 @@ static void refreshSpecifiers() {
         PSSpecifier *supportDevGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"开发支持" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
         [rootSpecifiers addObject:supportDevGroupSpec];
         
-        PSSpecifier *supportDevSpec = [PSSpecifier preferenceSpecifierNamed:@"支持开发者" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
-        [supportDevSpec setProperty:@"支持开发者" forKey:@"label"];
+        PSSpecifier *supportDevSpec = [PSSpecifier preferenceSpecifierNamed:@"关注抖音" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+        [supportDevSpec setProperty:@"关注抖音" forKey:@"label"];
         [supportDevSpec setButtonAction:@selector(donation)];
         [supportDevSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/PayPal.png"] forKey:@"iconImage"];
         [rootSpecifiers addObject:supportDevSpec];
@@ -158,15 +158,15 @@ static void refreshSpecifiers() {
         [rootSpecifiers addObject:contactGroupSpec];
         
         //Twitter
-        PSSpecifier *twitterSpec = [PSSpecifier preferenceSpecifierNamed:@"推特" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
-        [twitterSpec setProperty:@"推特" forKey:@"label"];
+        PSSpecifier *twitterSpec = [PSSpecifier preferenceSpecifierNamed:@"Sileo越狱源" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+        [twitterSpec setProperty:@"Sileo越狱源" forKey:@"label"];
         [twitterSpec setButtonAction:@selector(twitter)];
         [twitterSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/Twitter.png"] forKey:@"iconImage"];
         [rootSpecifiers addObject:twitterSpec];
         
         //Reddit
-        PSSpecifier *redditSpec = [PSSpecifier preferenceSpecifierNamed:@"Reddit" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
-        [redditSpec setProperty:@"Reddit" forKey:@"label"];
+        PSSpecifier *redditSpec = [PSSpecifier preferenceSpecifierNamed:@"TG分享频道" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+        [redditSpec setProperty:@"TG分享频道" forKey:@"label"];
         [redditSpec setButtonAction:@selector(reddit)];
         [redditSpec setProperty:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/BakgrunnurPrefs.bundle/Reddit.png"] forKey:@"iconImage"];
         [rootSpecifiers addObject:redditSpec];
@@ -300,10 +300,17 @@ static void refreshSpecifiers() {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Bakgrunnur" message:@"无需重启，是否仍要重启 SpringBoard？" preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [self runCommand:@"/usr/bin/bkg --privatekillbkgd"];
-        NSURL *relaunchURL = [NSURL URLWithString:@"prefs:root=Bakgrunnur"];
-        SBSRelaunchAction *restartAction = [NSClassFromString(@"SBSRelaunchAction") actionWithReason:@"RestartRenderServer" options:4 targetURL:relaunchURL];
-        [[NSClassFromString(@"FBSSystemService") sharedService] sendActions:[NSSet setWithObject:restartAction] withResult:nil];
+        NSString *jbPrefix = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"] ? @"/var/jb" : @"";
+        NSString *bkgPath = [jbPrefix stringByAppendingString:@"/usr/bin/bkg"];
+        if ([[NSFileManager defaultManager] isExecutableFileAtPath:bkgPath]){
+            [self runCommand:[NSString stringWithFormat:@"'%@' --privatekillbkgd", bkgPath]];
+        }
+        NSString *sbreloadPath = [jbPrefix stringByAppendingString:@"/usr/bin/sbreload"];
+        if ([[NSFileManager defaultManager] isExecutableFileAtPath:sbreloadPath]){
+            [self runCommand:[NSString stringWithFormat:@"'%@'", sbreloadPath]];
+        }else{
+            [self runCommand:@"killall -9 SpringBoard"];
+        }
     }];
     
     UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
@@ -317,14 +324,14 @@ static void refreshSpecifiers() {
 }
 
 -(void)donation{
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.me/udevs"] options:@{} completionHandler:nil];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"snssdk1128://user/profile/1935590721863150"] options:@{} completionHandler:nil];
 }
 
 -(void)twitter{
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://twitter.com/udevs9"] options:@{} completionHandler:nil];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://axs66.github.io/repo"] options:@{} completionHandler:nil];
 }
 
 -(void)reddit{
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.reddit.com/user/h4roldj"] options:@{} completionHandler:nil];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://t.me/wxfx8"] options:@{} completionHandler:nil];
 }
 @end
