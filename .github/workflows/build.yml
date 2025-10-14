@@ -1,14 +1,12 @@
 name: CI
-
-# 仅当 build.yml 文件发生变化时触发工作流
 on:
   push:
     paths:
-      - '.github/workflows/build.yml'  # 监控 build.yml 文件的变化
-      - 'Bakgrunnur.xm'  # 增加对 Tweak.xm 文件的监控
-      - 'control' 
+      - '.github/workflows/build.yml'
+      - 'Bakgrunnur.xm'
+      - 'control'
     branches:
-      - 'main'  # 仅在推送到 main 分支时触发
+      - 'main'
   workflow_dispatch:
 
 jobs:
@@ -18,11 +16,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          submodules: true
 
       - name: Use Theos Setup Action
         uses: axs66/theos-action@main
+
+      # ✅ 拉取 Preferences.framework 仓库
+      - name: Clone Preferences.framework
+        run: |
+          git clone --depth=1 https://github.com/axs66/Preferences.framework.git $THEOS/lib/Preferences.framework
 
       - name: Clean previous packages
         run: rm -f ${{ github.workspace }}/packages/*.deb
