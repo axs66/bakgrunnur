@@ -2,6 +2,11 @@
 #import <stdio.h>
 #import <mach/mach.h>
 #import "BKGDaemon.h"
+#import <dlfcn.h>
+
+#ifndef XPC_CONNECTION_MACH_SERVICE_LISTENER
+#define XPC_CONNECTION_MACH_SERVICE_LISTENER 0x2
+#endif
 
 static void handleXPCObject(xpc_object_t object) {
     BKGDaemon *daemon = [BKGDaemon sharedInstance];
@@ -52,7 +57,9 @@ int main(int argc, char *argv[], char *envp[]) {
     
     [BKGDaemon load];
     
-    xpc_connection_t service = xpc_connection_create_mach_service("com.udevs.bkgd", dispatch_get_main_queue(), XPC_CONNECTION_MACH_SERVICE_LISTENER);
+    typedef xpc_connection_t (*create_mach_service_f)(const char *name, dispatch_queue_t targetq, uint64_t flags);
+    create_mach_service_f create_mach_service_ptr = (create_mach_service_f)dlsym(RTLD_DEFAULT, "xpc_connection_create_mach_service");
+    xpc_connection_t service = create_mach_service_ptr ? create_mach_service_ptr("com.udevs.bkgd", dispatch_get_main_queue(), XPC_CONNECTION_MACH_SERVICE_LISTENER) : NULL;
     
     if (!service) {
         HBLogDebug(@"ERROR: Failed to create service.");
