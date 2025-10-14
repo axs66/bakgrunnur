@@ -705,8 +705,16 @@
 }
 
 -(xpc_connection_t)vxXPCConnection{
-	xpc_connection_t connection =
-	xpc_connection_create_mach_service("com.udevs.vexillarius", NULL, 0);
+	xpc_connection_t connection = NULL;
+	void *handle = dlopen(NULL, RTLD_LAZY);
+	if (handle){
+		typedef xpc_connection_t (*xpc_cms_fn)(const char *, dispatch_queue_t, uint64_t);
+		xpc_cms_fn cms = (xpc_cms_fn)dlsym(handle, "xpc_connection_create_mach_service");
+		if (cms){
+			connection = cms("com.udevs.vexillarius", NULL, 0);
+		}
+	}
+	if (!connection) return NULL;
 	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
 	});
 	xpc_connection_resume(connection);
@@ -1299,9 +1307,18 @@
  }
  */
 
+
 -(void)createXPCConnection{
-	self.bkgd_xpc_connection =
-	xpc_connection_create_mach_service("com.udevs.bkgd", NULL, 0);
+	self.bkgd_xpc_connection = NULL;
+	void *handle = dlopen(NULL, RTLD_LAZY);
+	if (handle){
+		typedef xpc_connection_t (*xpc_cms_fn)(const char *, dispatch_queue_t, uint64_t);
+		xpc_cms_fn cms = (xpc_cms_fn)dlsym(handle, "xpc_connection_create_mach_service");
+		if (cms){
+			self.bkgd_xpc_connection = cms("com.udevs.bkgd", NULL, 0);
+		}
+	}
+	if (!self.bkgd_xpc_connection) return;
 	xpc_connection_set_event_handler(self.bkgd_xpc_connection, ^(xpc_object_t event) {
 		// Same semantics as a connection created through
 		// xpc_connection_create().
