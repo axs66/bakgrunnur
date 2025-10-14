@@ -1,7 +1,7 @@
 Package: com.axs.bakgrunnur
 Name: Bakgrunnur 应用真后台
 Depends: mobilesubstrate (>= 0.9.5000), com.opa334.ccsupport, com.opa334.altlist
-Version: 1.7.13
+Version: 1.8.0
 Architecture: iphoneos-arm
 Description: Truly backgrounding your apps
 Maintainer: Axs
