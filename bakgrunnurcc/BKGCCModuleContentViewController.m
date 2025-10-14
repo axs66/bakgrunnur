@@ -3,7 +3,6 @@
 #import "BKGCCToggleModule.h"
 #import "ControlCenterUIKit.h"
 #import "../PrivateHeaders.h"
-#import <ControlCenterUIKit/CCUIButtonModuleView.h>
 #import "../BKGBakgrunnur.h"
 #import "../BKGShared.h"
 #import <objc/runtime.h>
