@@ -8,6 +8,8 @@ BUNDLE_NAME = BakgrunnurPrefs
 BakgrunnurPrefs_FILES = $(wildcard *.m) ../BKGShared.mm AltListLoader.m
 BakgrunnurPrefs_INSTALL_PATH = /Library/PreferenceBundles
 BakgrunnurPrefs_FRAMEWORKS = UIKit
+BakgrunnurPrefs_PRIVATE_FRAMEWORKS = Preferences
+BakgrunnurPrefs_EXTRA_FRAMEWORKS = AltList
 BakgrunnurPrefs_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)/bakgrunnurprefs/AltList
 BakgrunnurPrefs_LDFLAGS += -Wl,-undefined,dynamic_lookup
 
