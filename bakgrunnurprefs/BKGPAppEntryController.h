@@ -17,6 +17,8 @@
     BOOL _manuallyExpanded;
 	BOOL _cpuThrottleWarningShown;
 }
+@property (nonatomic, retain) NSString *identifier;
+@property (nonatomic, retain) NSString *appName;
 -(void)updateParentViewController;
 @end
 
