@@ -2,6 +2,8 @@
 #import "../BKGShared.h"
 #import <HBLog.h>
 #import <Preferences/PSListController.h>
+#import <Preferences/PSSpecifier.h>
+#import <Preferences/PSTableCell.h>
 
 @implementation BKGPApplicationListSubcontrollerController {
     id _altListController;
