@@ -10,4 +10,7 @@
 -(void)updateIvars;
 -(void)loadPreferences;
 -(void)createBasicAppList;
+-(id)specifierForApplicationWithIdentifier:(NSString *)identifier;
+-(void)reloadSpecifier:(id)specifier animated:(BOOL)animated;
+-(void)reloadSpecifiers;
 @end
