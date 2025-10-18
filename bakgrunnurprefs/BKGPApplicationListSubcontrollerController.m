@@ -96,7 +96,7 @@ static void refreshSpecifiers() {
                                                                         set:@selector(setPreferenceValue:specifier:) 
                                                                         get:@selector(readPreferenceValue:) 
                                                                     detail:NSClassFromString(@"BKGPAppEntryController") 
-                                                                       cell:PSLinkListCell 
+                                                                       cell:PSLinkCell 
                                                                        edit:nil];
                 [appSpec setProperty:bundleId forKey:@"identifier"];
                 [appSpec setProperty:displayName forKey:@"label"];
@@ -191,7 +191,7 @@ static void refreshSpecifiers() {
     }
     
     // Create a basic specifier when AltList is not available
-    PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:identifier target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppEntryController") cell:PSLinkListCell edit:nil];
+    PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:identifier target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppEntryController") cell:PSLinkCell edit:nil];
     [specifier setProperty:identifier forKey:@"identifier"];
     [specifier setProperty:identifier forKey:@"label"];
     return specifier;
