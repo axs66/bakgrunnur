@@ -1,4 +1,5 @@
 #import "../common.h"
+
 #import "AltList/ATLApplicationListSubcontrollerController.h"
 
 @interface BKGPApplicationListSubcontrollerController : ATLApplicationListSubcontrollerController{
