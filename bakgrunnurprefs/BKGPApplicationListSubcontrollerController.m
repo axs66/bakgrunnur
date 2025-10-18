@@ -32,7 +32,10 @@ static void refreshSpecifiers() {
 
 - (void)loadPreferences{
     [self updateIvars];
+    
+#if __has_include(<AltList/ATLApplicationListSubcontrollerController.h>)
     [super loadPreferences];
+#endif
 }
 
 - (NSString*)previewStringForApplicationWithIdentifier:(NSString *)applicationID{
@@ -48,18 +51,18 @@ static void refreshSpecifiers() {
     
     if (seconds < 60){
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@秒", [formatter stringFromNumber:@(seconds)]];
+        return [NSString stringWithFormat:@"%@秒", [formatter stringFromNumber:@(seconds)], seconds > 1 ? @"secs" : @"sec"];
     }else if (seconds < 3600){
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@分钟", [formatter stringFromNumber:@(seconds/60.0)]];
+        return [NSString stringWithFormat:@"%@分钟", [formatter stringFromNumber:@(seconds/60.0)], seconds/60.0 > 1 ? @"mins" : @"min"];
     }else if (fmod(seconds, 60.0) > 0){
         formatter.numberStyle = NSNumberFormatterDecimalStyle;
         formatter.maximumFractionDigits = 1;
         formatter.roundingMode = NSNumberFormatterRoundUp;
-        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)]];
+        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)], seconds/3600.0 > 1 ? @"hours" : @"hour"];
     }else{
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)]];
+        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)], seconds/3600.0 > 1 ? @"hours" : @"hour"];
     }
 }
 
@@ -146,3 +149,11 @@ static void refreshSpecifiers() {
     }
 }
 @end
+
+#if !__has_include(<AltList/ATLApplicationListSubcontrollerController.h>)
+@implementation ATLApplicationListSubcontrollerController
+- (PSSpecifier *)specifierForApplicationWithIdentifier:(NSString *)identifier{
+    return nil;
+}
+@end
+#endif
