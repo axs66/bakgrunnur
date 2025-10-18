@@ -89,6 +89,26 @@ static void refreshSpecifiers() {
     return [super respondsToSelector:aSelector];
 }
 
+// Implement required methods for compatibility
+- (id)specifierForApplicationWithIdentifier:(NSString *)identifier {
+    if (_altListController && [_altListController respondsToSelector:@selector(specifierForApplicationWithIdentifier:)]) {
+        return [_altListController performSelector:@selector(specifierForApplicationWithIdentifier:) withObject:identifier];
+    }
+    return nil;
+}
+
+- (void)reloadSpecifier:(id)specifier animated:(BOOL)animated {
+    if (_altListController && [_altListController respondsToSelector:@selector(reloadSpecifier:animated:)]) {
+        [_altListController performSelector:@selector(reloadSpecifier:animated:) withObject:specifier withObject:@(animated)];
+    }
+}
+
+- (void)reloadSpecifiers {
+    if (_altListController && [_altListController respondsToSelector:@selector(reloadSpecifiers)]) {
+        [_altListController performSelector:@selector(reloadSpecifiers)];
+    }
+}
+
 - (NSString*)previewStringForApplicationWithIdentifier:(NSString *)applicationID{
     return [self previewForApplication:applicationID];
 }
