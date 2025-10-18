@@ -1,35 +1,21 @@
 #!/bin/bash
-set -e
 
-# Rootless prefix detection
-PREFIX=""
-if [ -d "/var/jb" ]; then
-    PREFIX="/var/jb"
-    echo "[Bakgrunnur] Detected Rootless environment (prefix: $PREFIX)"
-else
-    echo "[Bakgrunnur] Detected Rootful environment"
-fi
+# Rootless 版 Bakgrunnur 安装脚本
+# 注意：所有路径都必须加上 /var/jb 前缀
 
-# Ensure directories exist
-mkdir -p "$PREFIX/Library/LaunchDaemons"
-mkdir -p "$PREFIX/usr/libexec"
-mkdir -p "$PREFIX/Library/Application Support/Bakgrunnur.bundle"
+echo "[Bakgrunnur] Setting up daemon..."
 
-# Fix permissions
-chmod 755 "$PREFIX/usr/libexec/bkgd" 2>/dev/null || true
-chmod 644 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" 2>/dev/null || true
+# 设置二进制执行权限
+chown root:wheel /var/jb/usr/libexec/bkgd
+chmod 755 /var/jb/usr/libexec/bkgd
 
-# Load LaunchDaemon
-if [ -n "$PREFIX" ]; then
-    echo "[Bakgrunnur] Loading LaunchDaemon (rootless)..."
-    # unload old if exists
-    launchctl bootout gui/501 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" 2>/dev/null || true
-    launchctl bootstrap gui/501 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" || true
-else
-    echo "[Bakgrunnur] Loading LaunchDaemon (rootful)..."
-    launchctl unload /Library/LaunchDaemons/com.udevs.bkgd.plist 2>/dev/null || true
-    launchctl load /Library/LaunchDaemons/com.udevs.bkgd.plist || true
-fi
+# 设置 LaunchDaemon 配置文件权限
+chown root:wheel /var/jb/Library/LaunchDaemons/com.udevs.bkgd.plist
+chmod 644 /var/jb/Library/LaunchDaemons/com.udevs.bkgd.plist
 
-echo "[Bakgrunnur] postinst complete."
+# 重新加载守护进程（Rootless 环境下必须使用 /var/jb 前缀）
+launchctl bootstrap system /var/jb/Library/LaunchDaemons/com.udevs.bkgd.plist 2>/dev/null || true
+
+echo "[Bakgrunnur] Daemon installed and loaded."
+
 exit 0
