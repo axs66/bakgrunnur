@@ -1,8 +1,6 @@
-#import "ATLApplicationListControllerBase.h"
+#import <Preferences/PSListController.h>
 
-@interface ATLApplicationListSubcontrollerController : ATLApplicationListControllerBase
-@property (nonatomic) Class subcontrollerClass;
-
-- (NSString*)previewStringForApplicationWithIdentifier:(NSString*)applicationID;
-
+@interface ATLApplicationListSubcontrollerController : PSListController
+- (void)loadPreferences;
+- (PSSpecifier *)specifierForApplicationWithIdentifier:(NSString *)identifier;
 @end
