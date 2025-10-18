@@ -1,8 +1,11 @@
 #import "BKGPApplicationListSubcontrollerController.h"
 #import "../BKGShared.h"
 #import <HBLog.h>
+#import <Preferences/PSListController.h>
 
-@implementation BKGPApplicationListSubcontrollerController
+@implementation BKGPApplicationListSubcontrollerController {
+    id _altListController;
+}
 
 static void refreshSpecifiers() {
 	[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_SPECIFIERS_LOCAL_NOTIFICATION_NAME object:nil];
@@ -33,7 +36,57 @@ static void refreshSpecifiers() {
 
 - (void)loadPreferences{
     [self updateIvars];
-    [super loadPreferences];
+    
+    // Try to load AltList framework dynamically at runtime
+    NSBundle *altListBundle = [NSBundle bundleWithPath:@"/var/jb/Library/Frameworks/AltList.framework"];
+    if (altListBundle && [altListBundle load]) {
+        // AltList is available, create AltList controller dynamically
+        Class altListClass = NSClassFromString(@"ATLApplicationListSubcontrollerController");
+        if (altListClass) {
+            _altListController = [[altListClass alloc] init];
+            if ([_altListController respondsToSelector:@selector(loadPreferences)]) {
+                [_altListController performSelector:@selector(loadPreferences)];
+            }
+        }
+    } else {
+        // AltList not available, create a basic specifier list
+        HBLogDebug(@"AltList.framework not found, creating basic app list");
+        [self createBasicAppList];
+    }
+}
+
+- (void)createBasicAppList {
+    // Create a basic specifier list when AltList is not available
+    NSMutableArray *specifiers = [NSMutableArray array];
+    
+    // Add a group header
+    PSSpecifier *groupSpec = [PSSpecifier preferenceSpecifierNamed:@"已安装的应用" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+    [specifiers addObject:groupSpec];
+    
+    // Add a note about AltList requirement
+    PSSpecifier *noteSpec = [PSSpecifier preferenceSpecifierNamed:@"需要安装 AltList 框架" target:nil set:nil get:nil detail:nil cell:PSStaticTextCell edit:nil];
+    [noteSpec setProperty:@"请安装 AltList 框架以显示应用列表" forKey:@"footerText"];
+    [specifiers addObject:noteSpec];
+    
+    // Use KVC to set specifiers if this object responds to it
+    if ([self respondsToSelector:@selector(setSpecifiers:)]) {
+        [self setValue:specifiers forKey:@"specifiers"];
+    }
+}
+
+// Forward method calls to AltList controller if available
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    if (_altListController && [_altListController respondsToSelector:aSelector]) {
+        return _altListController;
+    }
+    return [super forwardingTargetForSelector:aSelector];
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    if (_altListController && [_altListController respondsToSelector:aSelector]) {
+        return YES;
+    }
+    return [super respondsToSelector:aSelector];
 }
 
 - (NSString*)previewStringForApplicationWithIdentifier:(NSString *)applicationID{
