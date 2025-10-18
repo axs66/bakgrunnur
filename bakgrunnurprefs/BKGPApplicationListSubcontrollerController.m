@@ -110,7 +110,12 @@ static void refreshSpecifiers() {
     if (_altListController && [_altListController respondsToSelector:@selector(specifierForApplicationWithIdentifier:)]) {
         return [_altListController performSelector:@selector(specifierForApplicationWithIdentifier:) withObject:identifier];
     }
-    return nil;
+    
+    // Create a basic specifier when AltList is not available
+    PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:identifier target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppEntryController") cell:PSLinkListCell edit:nil];
+    [specifier setProperty:identifier forKey:@"identifier"];
+    [specifier setProperty:identifier forKey:@"label"];
+    return specifier;
 }
 
 - (void)reloadSpecifier:(id)specifier animated:(BOOL)animated {
