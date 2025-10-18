@@ -189,10 +189,9 @@ static void refreshSpecifiers() {
         
         [appEntrySpecifiers addObjectsFromArray:_staticSpecifiers];
         
-        if ([[self readPreferenceValue:_enabledEntrySpecifier] boolValue]){
-            [appEntrySpecifiers addObjectsFromArray:_expandableSpecifiers];
-            _expanded = YES;
-        }
+        // Always show all options, not just when enabled
+        [appEntrySpecifiers addObjectsFromArray:_expandableSpecifiers];
+        _expanded = YES;
         
         _specifiers = appEntrySpecifiers;
         
