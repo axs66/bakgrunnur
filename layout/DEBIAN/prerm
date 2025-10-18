@@ -1,3 +1,22 @@
 #!/bin/bash
-# Safe prerm for rootless: do not invoke helper binaries or launchctl.
+set -e
+
+PREFIX=""
+if [ -d "/var/jb" ]; then
+    PREFIX="/var/jb"
+    echo "[Bakgrunnur] Detected Rootless environment (prefix: $PREFIX)"
+else
+    echo "[Bakgrunnur] Detected Rootful environment"
+fi
+
+# Unload LaunchDaemon before removing files
+if [ -n "$PREFIX" ]; then
+    echo "[Bakgrunnur] Unloading LaunchDaemon (rootless)..."
+    launchctl bootout gui/501 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" 2>/dev/null || true
+else
+    echo "[Bakgrunnur] Unloading LaunchDaemon (rootful)..."
+    launchctl unload /Library/LaunchDaemons/com.udevs.bkgd.plist 2>/dev/null || true
+fi
+
+echo "[Bakgrunnur] prerm complete."
 exit 0
