@@ -1,22 +1,20 @@
 #!/bin/bash
-set -e
 
-PREFIX=""
-if [ -d "/var/jb" ]; then
-    PREFIX="/var/jb"
-    echo "[Bakgrunnur] Detected Rootless environment (prefix: $PREFIX)"
-else
-    echo "[Bakgrunnur] Detected Rootful environment"
+echo "[Bakgrunnur] Restoring original state..."
+
+# 在无根环境下，二进制位于 /var/jb/usr/bin/ 或 /var/jb/usr/libexec/
+# 如果存在 bkg 可执行文件，就执行它的清理指令
+if [ -x /var/jb/usr/bin/bkg ]; then
+    /var/jb/usr/bin/bkg --privatepreming
+elif [ -x /var/jb/usr/libexec/bkg ]; then
+    /var/jb/usr/libexec/bkg --privatepreming
 fi
 
-# Unload LaunchDaemon before removing files
-if [ -n "$PREFIX" ]; then
-    echo "[Bakgrunnur] Unloading LaunchDaemon (rootless)..."
-    launchctl bootout gui/501 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" 2>/dev/null || true
-else
-    echo "[Bakgrunnur] Unloading LaunchDaemon (rootful)..."
-    launchctl unload /Library/LaunchDaemons/com.udevs.bkgd.plist 2>/dev/null || true
-fi
+echo "[Bakgrunnur] Stopping daemon..."
 
-echo "[Bakgrunnur] prerm complete."
+# Rootless 下 LaunchDaemons 路径需加 /var/jb 前缀
+launchctl bootout system /var/jb/Library/LaunchDaemons/com.udevs.bkgd.plist 2>/dev/null || true
+
+echo "[Bakgrunnur] Daemon stopped and cleaned up."
+
 exit 0
