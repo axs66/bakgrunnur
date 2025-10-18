@@ -22,6 +22,15 @@ static void refreshSpecifiers() {
 	return self;
 }
 
+- (instancetype)initWithSpecifier:(PSSpecifier *)specifier {
+    if ((self = [super initWithSpecifier:specifier])) {
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)refreshSpecifiers, (CFStringRef)RELOAD_SPECIFIERS_NOTIFICATION_NAME, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSpecifiers:) name:RELOAD_SPECIFIERS_LOCAL_NOTIFICATION_NAME object:nil];
+    }
+    return self;
+}
+
 - (void)refreshSpecifiers:(NSNotification *)notification{
 	[self reloadSpecifiers];
 }
@@ -48,6 +57,13 @@ static void refreshSpecifiers() {
             _altListController = [[altListClass alloc] init];
             if ([_altListController respondsToSelector:@selector(loadPreferences)]) {
                 [_altListController performSelector:@selector(loadPreferences)];
+                // Copy specifiers from AltList controller
+                if ([_altListController respondsToSelector:@selector(specifiers)]) {
+                    NSArray *specifiers = [_altListController performSelector:@selector(specifiers)];
+                    if (specifiers) {
+                        [self setSpecifiers:specifiers];
+                    }
+                }
             }
         }
     } else {
@@ -70,10 +86,8 @@ static void refreshSpecifiers() {
     [noteSpec setProperty:@"请安装 AltList 框架以显示应用列表" forKey:@"footerText"];
     [specifiers addObject:noteSpec];
     
-    // Use KVC to set specifiers if this object responds to it
-    if ([self respondsToSelector:@selector(setSpecifiers:)]) {
-        [self setValue:specifiers forKey:@"specifiers"];
-    }
+    // Set specifiers using the proper PSListController method
+    [self setSpecifiers:specifiers];
 }
 
 // Forward method calls to AltList controller if available
@@ -108,7 +122,14 @@ static void refreshSpecifiers() {
 - (void)reloadSpecifiers {
     if (_altListController && [_altListController respondsToSelector:@selector(reloadSpecifiers)]) {
         [_altListController performSelector:@selector(reloadSpecifiers)];
+    } else {
+        [super reloadSpecifiers];
     }
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self loadPreferences];
 }
 
 - (NSString*)previewStringForApplicationWithIdentifier:(NSString *)applicationID{
