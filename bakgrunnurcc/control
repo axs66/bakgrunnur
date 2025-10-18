@@ -1,9 +1,9 @@
-Package: com.udevs.bakgrunnurcc
+Package: com.axs.bakgrunnurcc
 Name: BakgrunnurCC
 Depends: mobilesubstrate
 Version: 0.0.1
 Architecture: iphoneos-arm
 Description: An awesome Control Center module!
-Maintainer: udevs
-Author: udevs
+Maintainer: Axs
+Author: Axs
 Section: Control Center (Modules)
