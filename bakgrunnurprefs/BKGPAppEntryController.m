@@ -34,8 +34,8 @@ static void refreshSpecifiers() {
 		_cpuThrottleWarningSpecifiers = [NSMutableArray array];
 
         //Enabled
-		_enabledEntrySpecifier = [PSSpecifier preferenceSpecifierNamed:@"Enabled" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [_enabledEntrySpecifier setProperty:@"Enabled" forKey:@"label"];
+		_enabledEntrySpecifier = [PSSpecifier preferenceSpecifierNamed:@"启用" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [_enabledEntrySpecifier setProperty:@"启用" forKey:@"label"];
         [_enabledEntrySpecifier setProperty:@"enabled" forKey:@"key"];
         [_enabledEntrySpecifier setProperty:@NO forKey:@"default"];
         [_enabledEntrySpecifier setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -47,11 +47,11 @@ static void refreshSpecifiers() {
         
         //Enabled notification
         PSSpecifier *enabledAppNotificationsGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [enabledAppNotificationsGroupSpec setProperty:[NSString stringWithFormat:@"Allow %@ to dispatch notifications even though it is being backgrounded by Bakgrunnur.", self.title] forKey:@"footerText"];
+        [enabledAppNotificationsGroupSpec setProperty:[NSString stringWithFormat:@"允许 %@ 在被 Bakgrunnur 后台管理时继续发送通知。", self.title] forKey:@"footerText"];
         [_expandableSpecifiers addObject:enabledAppNotificationsGroupSpec];
         
-        PSSpecifier *enabledAppNotificationsSpec = [PSSpecifier preferenceSpecifierNamed:@"Notifications (BETA)" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [enabledAppNotificationsSpec setProperty:@"Notifications (BETA)" forKey:@"label"];
+        PSSpecifier *enabledAppNotificationsSpec = [PSSpecifier preferenceSpecifierNamed:@"通知 (测试版)" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [enabledAppNotificationsSpec setProperty:@"通知 (测试版)" forKey:@"label"];
         [enabledAppNotificationsSpec setProperty:@"enabledAppNotifications" forKey:@"key"];
         [enabledAppNotificationsSpec setProperty:@NO forKey:@"default"];
         [enabledAppNotificationsSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -60,11 +60,11 @@ static void refreshSpecifiers() {
         
         //Persistence once
         PSSpecifier *persistenceOnceGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [persistenceOnceGroupSpec setProperty:[NSString stringWithFormat:@"Keep \"Enable Once\" token for %@ alive unless being forcefully terminated via app switcher. Token will be revoked whenever %@ is active again when this setting is disabled.", self.title, self.title] forKey:@"footerText"];
+        [persistenceOnceGroupSpec setProperty:[NSString stringWithFormat:@"保持 %@ 的\"启用一次\"令牌存活，除非通过应用切换器强制终止。当此设置被禁用时，每当 %@ 重新激活时令牌将被撤销。", self.title, self.title] forKey:@"footerText"];
         [_expandableSpecifiers addObject:persistenceOnceGroupSpec];
         
-        PSSpecifier *persistenceOnceSpec = [PSSpecifier preferenceSpecifierNamed:@"Persistence Once Token" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [persistenceOnceSpec setProperty:@"Persistence Once Token" forKey:@"label"];
+        PSSpecifier *persistenceOnceSpec = [PSSpecifier preferenceSpecifierNamed:@"持久化一次令牌" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [persistenceOnceSpec setProperty:@"持久化一次令牌" forKey:@"label"];
         [persistenceOnceSpec setProperty:@"persistenceOnce" forKey:@"key"];
         [persistenceOnceSpec setProperty:@NO forKey:@"default"];
         [persistenceOnceSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -73,11 +73,11 @@ static void refreshSpecifiers() {
         
         //Dark wake
         PSSpecifier *darkWakeGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [darkWakeGroupSpec setProperty:[NSString stringWithFormat:@"Allow %@ to put device into half-asleep state instead of full sleep when locked. CPU, networking and disk read/write will operate at full capacity in this state. Useful when app needs full network/disk speed for background operations (files downloading, SSH etc.). By default, system will throttle/disable these capabilities when locked.", self.title] forKey:@"footerText"];
+        [darkWakeGroupSpec setProperty:[NSString stringWithFormat:@"允许 %@ 在锁定时将设备置于半睡眠状态而不是完全睡眠。在此状态下，CPU、网络和磁盘读写将以全容量运行。当应用需要完整的网络/磁盘速度进行后台操作（文件下载、SSH等）时很有用。默认情况下，系统在锁定时会限制/禁用这些功能。", self.title] forKey:@"footerText"];
         [_expandableSpecifiers addObject:darkWakeGroupSpec];
         
-        PSSpecifier *darkWakeSpec = [PSSpecifier preferenceSpecifierNamed:@"Half-asleep" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [darkWakeSpec setProperty:@"Half-asleep" forKey:@"label"];
+        PSSpecifier *darkWakeSpec = [PSSpecifier preferenceSpecifierNamed:@"半睡眠" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [darkWakeSpec setProperty:@"半睡眠" forKey:@"label"];
         [darkWakeSpec setProperty:@"darkWake" forKey:@"key"];
         [darkWakeSpec setProperty:@NO forKey:@"default"];
         [darkWakeSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -86,11 +86,11 @@ static void refreshSpecifiers() {
         
         //aggressive assertion
         PSSpecifier *aggressiveAssertionGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [aggressiveAssertionGroupSpec setProperty:[NSString stringWithFormat:@"Aggressively put %@ into backgrounding mode. Enabling this will prevent the UI of %@ from being throttled and try to use as much resources as needed.", self.title, self.title] forKey:@"footerText"];
+        [aggressiveAssertionGroupSpec setProperty:[NSString stringWithFormat:@"积极地将 %@ 置于后台模式。启用此选项将防止 %@ 的UI被限制，并尝试使用所需的尽可能多的资源。", self.title, self.title] forKey:@"footerText"];
         [_expandableSpecifiers addObject:aggressiveAssertionGroupSpec];
         
-        PSSpecifier *aggressiveAssertionSpec = [PSSpecifier preferenceSpecifierNamed:@"Aggressive" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-        [aggressiveAssertionSpec setProperty:@"Aggressive" forKey:@"label"];
+        PSSpecifier *aggressiveAssertionSpec = [PSSpecifier preferenceSpecifierNamed:@"积极模式" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+        [aggressiveAssertionSpec setProperty:@"积极模式" forKey:@"label"];
         [aggressiveAssertionSpec setProperty:@"aggressiveAssertion" forKey:@"key"];
         [aggressiveAssertionSpec setProperty:@YES forKey:@"default"];
         [aggressiveAssertionSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -99,23 +99,23 @@ static void refreshSpecifiers() {
         
 		//throttle cpu
 		PSSpecifier *cpuThrottleGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-		[cpuThrottleGroupSpec setProperty:[NSString stringWithFormat:@"Throttle CPU usage of %@ while backgrounding. \"Aggressive\" option above might gets deprioritized if enabled. Default is 80%%.", self.title] forKey:@"footerText"];
+		[cpuThrottleGroupSpec setProperty:[NSString stringWithFormat:@"在后台运行时限制 %@ 的CPU使用率。如果启用，上面的\"积极模式\"选项可能会被降级。默认为80%%。", self.title] forKey:@"footerText"];
 		[_expandableSpecifiers addObject:cpuThrottleGroupSpec];
 		
-		PSSpecifier *cpuThrottleSpecifier = [PSSpecifier preferenceSpecifierNamed:@"CPU Throttle" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-		[cpuThrottleSpecifier setProperty:@"CPU Throttle" forKey:@"label"];
+		PSSpecifier *cpuThrottleSpecifier = [PSSpecifier preferenceSpecifierNamed:@"CPU限制" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+		[cpuThrottleSpecifier setProperty:@"CPU限制" forKey:@"label"];
 		[cpuThrottleSpecifier setProperty:@"cpuThrottleEnabled" forKey:@"key"];
 		[cpuThrottleSpecifier setProperty:@NO forKey:@"default"];
 		[cpuThrottleSpecifier setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
 		[cpuThrottleSpecifier setProperty:PREFS_CHANGED_NOTIFICATION_NAME forKey:@"PostNotification"];
 		[_expandableSpecifiers addObject:cpuThrottleSpecifier];
 		
-		_cpuThrottlePercentageSpecifier = [PSTextFieldSpecifier preferenceSpecifierNamed:@"Percentage" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSEditTextCell edit:nil];
+		_cpuThrottlePercentageSpecifier = [PSTextFieldSpecifier preferenceSpecifierNamed:@"百分比" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSEditTextCell edit:nil];
 		[_cpuThrottlePercentageSpecifier setKeyboardType:UIKeyboardTypeNumberPad autoCaps:UITextAutocapitalizationTypeNone autoCorrection:UITextAutocorrectionTypeNo];
 		[_cpuThrottlePercentageSpecifier setPlaceholder:@"80"];
 		[_cpuThrottlePercentageSpecifier setProperty:@"throttlePercentage" forKey:@"key"];
 		[_cpuThrottlePercentageSpecifier setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
-		[_cpuThrottlePercentageSpecifier setProperty:@"Percentage" forKey:@"label"];
+		[_cpuThrottlePercentageSpecifier setProperty:@"百分比" forKey:@"label"];
 		[_cpuThrottlePercentageSpecifier setProperty:PREFS_CHANGED_NOTIFICATION_NAME forKey:@"PostNotification"];
 		[_expandableSpecifiers addObject:_cpuThrottlePercentageSpecifier];
 		
@@ -126,26 +126,26 @@ static void refreshSpecifiers() {
 		
         //expiration
         PSSpecifier *expirationGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [expirationGroupSpec setProperty:@"Set the expiration time (s) for app to be retired/terminated. The countdown will begin when the app entered background or the device is locked. It'll be reset whenever the app is in foreground or active again. Default is 3 hours." forKey:@"footerText"];
+        [expirationGroupSpec setProperty:@"设置应用被挂起/终止的过期时间（秒）。当应用进入后台或设备锁定时，倒计时将开始。每当应用重新进入前台或激活时，倒计时将被重置。默认为3小时。" forKey:@"footerText"];
         [_expandableSpecifiers addObject:expirationGroupSpec];
         
         
-        _expirationSpecifier = [PSTextFieldSpecifier preferenceSpecifierNamed:@"Expiration" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSEditTextCell edit:nil];
+        _expirationSpecifier = [PSTextFieldSpecifier preferenceSpecifierNamed:@"过期时间" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSEditTextCell edit:nil];
         [_expirationSpecifier setKeyboardType:UIKeyboardTypeNumberPad autoCaps:UITextAutocapitalizationTypeNone autoCorrection:UITextAutocorrectionTypeNo];
         [_expirationSpecifier setPlaceholder:@"10800"];
         [_expirationSpecifier setProperty:@"expiration" forKey:@"key"];
         [_expirationSpecifier setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
-        [_expirationSpecifier setProperty:@"Expiration" forKey:@"label"];
+        [_expirationSpecifier setProperty:@"过期时间" forKey:@"label"];
         [_expirationSpecifier setProperty:PREFS_CHANGED_NOTIFICATION_NAME forKey:@"PostNotification"];
         [_expandableSpecifiers addObject:_expirationSpecifier];
         
         //retire type
         PSSpecifier *retireSelectionGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [retireSelectionGroupSpec setProperty:@"\U0001F539Retire: System will be informed to suspends app gracefully.\n\U0001F539Terminate: App will be terminated immediately once it's expired.\n\U0001F539Immortal: App will remains active indefinately unless being forcefully terminated by user or after a respring.\n\U0001F539Advanced: App will be retired according to the preferred advanced settings (CPU, system calls & network) within the specified time span." forKey:@"footerText"];
+        [retireSelectionGroupSpec setProperty:@"\U0001F539挂起：系统将被通知优雅地暂停应用。\n\U0001F539终止：应用一旦过期将立即被终止。\n\U0001F539永生：应用将无限期保持活跃，除非被用户强制终止或重启后。\n\U0001F539高级：应用将根据首选的高级设置（CPU、系统调用和网络）在指定时间跨度内被挂起。" forKey:@"footerText"];
         [_expandableSpecifiers addObject:retireSelectionGroupSpec];
         
-        PSSpecifier *retireSelectionSpec = [PSSpecifier preferenceSpecifierNamed:@"Retire" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSegmentCell edit:nil];
-        [retireSelectionSpec setValues:@[@(BKGBackgroundTypeRetire), @(BKGBackgroundTypeTerminate), @(BKGBackgroundTypeImmortal), @(BKGBackgroundTypeAdvanced)] titles:@[@"Retire", @"Terminate", @"Immortal", @"Advanced"]];
+        PSSpecifier *retireSelectionSpec = [PSSpecifier preferenceSpecifierNamed:@"挂起方式" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSegmentCell edit:nil];
+        [retireSelectionSpec setValues:@[@(BKGBackgroundTypeRetire), @(BKGBackgroundTypeTerminate), @(BKGBackgroundTypeImmortal), @(BKGBackgroundTypeAdvanced)] titles:@[@"挂起", @"终止", @"永生", @"高级"]];
         [retireSelectionSpec setProperty:@(BKGBackgroundTypeRetire) forKey:@"default"];
         [retireSelectionSpec setProperty:@"retire" forKey:@"key"];
         [retireSelectionSpec setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
@@ -154,16 +154,16 @@ static void refreshSpecifiers() {
 		
         //Advanced
         PSSpecifier *advancedGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [advancedGroupSpec setProperty:[NSString stringWithFormat:@"Time Span is a global value, which means it applies to all enabled apps in this category to pleasantly manage power usage. Default is 30 minutes. Two periodic checks will be performed within the time span."] forKey:@"footerText"];
+        [advancedGroupSpec setProperty:[NSString stringWithFormat:@"时间跨度是一个全局值，这意味着它适用于此类别中所有启用的应用，以愉快地管理功耗。默认为30分钟。在时间跨度内将执行两次定期检查。"] forKey:@"footerText"];
         [_expandableSpecifiers addObject:advancedGroupSpec];
         
         //time span
-        _timeSpanSpecifier = [PSTextFieldSpecifier preferenceSpecifierNamed:@"Time Span" target:self set:@selector(setGlobalPreferenceValue:specifier:) get:@selector(readGlobalPreferenceValue:) detail:nil cell:PSEditTextCell edit:nil];
+        _timeSpanSpecifier = [PSTextFieldSpecifier preferenceSpecifierNamed:@"时间跨度" target:self set:@selector(setGlobalPreferenceValue:specifier:) get:@selector(readGlobalPreferenceValue:) detail:nil cell:PSEditTextCell edit:nil];
         [_timeSpanSpecifier setKeyboardType:UIKeyboardTypeNumberPad autoCaps:UITextAutocapitalizationTypeNone autoCorrection:UITextAutocorrectionTypeNo];
         [_timeSpanSpecifier setPlaceholder:@"1800"];
         [_timeSpanSpecifier setProperty:@"timeSpan" forKey:@"key"];
         [_timeSpanSpecifier setProperty:BAKGRUNNUR_IDENTIFIER forKey:@"defaults"];
-        [_timeSpanSpecifier setProperty:@"Time Span" forKey:@"label"];
+        [_timeSpanSpecifier setProperty:@"时间跨度" forKey:@"label"];
         [_timeSpanSpecifier setProperty:PREFS_CHANGED_NOTIFICATION_NAME forKey:@"PostNotification"];
         [_expandableSpecifiers addObject:_timeSpanSpecifier];
         
@@ -177,12 +177,12 @@ static void refreshSpecifiers() {
         [_expandableSpecifiers addObject:_cpuControllerSpecifier];
         
         //System Calls Controller
-        _systemCallsControllerSpecifier = [PSSpecifier preferenceSpecifierNamed:@"System Calls" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppSystemCallsController") cell:PSLinkCell edit:nil];
+        _systemCallsControllerSpecifier = [PSSpecifier preferenceSpecifierNamed:@"系统调用" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppSystemCallsController") cell:PSLinkCell edit:nil];
         [_systemCallsControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-systemcalls-[%@]", self.specifier.identifier, self.title] forKey:@"id"];
         [_expandableSpecifiers addObject:_systemCallsControllerSpecifier];
         
         //Network Controller
-        _networkControllerSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Network" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppNetworkController") cell:PSLinkCell edit:nil];
+        _networkControllerSpecifier = [PSSpecifier preferenceSpecifierNamed:@"网络" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppNetworkController") cell:PSLinkCell edit:nil];
         [_networkControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-network-[%@]", self.specifier.identifier, self.title] forKey:@"id"];
         [_expandableSpecifiers addObject:_networkControllerSpecifier];
         
