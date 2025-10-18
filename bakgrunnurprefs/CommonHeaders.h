@@ -1,5 +1,6 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
+#import <Preferences/PSTableCell.h>
 
 @interface PSSpecifier ()
 -(void)setValues:(id)arg1 titles:(id)arg2;
