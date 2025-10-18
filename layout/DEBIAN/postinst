@@ -1,3 +1,35 @@
 #!/bin/bash
-# Safe postinst for rootless: do not invoke launchctl, setuid, or execute helper binaries.
+set -e
+
+# Rootless prefix detection
+PREFIX=""
+if [ -d "/var/jb" ]; then
+    PREFIX="/var/jb"
+    echo "[Bakgrunnur] Detected Rootless environment (prefix: $PREFIX)"
+else
+    echo "[Bakgrunnur] Detected Rootful environment"
+fi
+
+# Ensure directories exist
+mkdir -p "$PREFIX/Library/LaunchDaemons"
+mkdir -p "$PREFIX/usr/libexec"
+mkdir -p "$PREFIX/Library/Application Support/Bakgrunnur.bundle"
+
+# Fix permissions
+chmod 755 "$PREFIX/usr/libexec/bkgd" 2>/dev/null || true
+chmod 644 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" 2>/dev/null || true
+
+# Load LaunchDaemon
+if [ -n "$PREFIX" ]; then
+    echo "[Bakgrunnur] Loading LaunchDaemon (rootless)..."
+    # unload old if exists
+    launchctl bootout gui/501 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" 2>/dev/null || true
+    launchctl bootstrap gui/501 "$PREFIX/Library/LaunchDaemons/com.udevs.bkgd.plist" || true
+else
+    echo "[Bakgrunnur] Loading LaunchDaemon (rootful)..."
+    launchctl unload /Library/LaunchDaemons/com.udevs.bkgd.plist 2>/dev/null || true
+    launchctl load /Library/LaunchDaemons/com.udevs.bkgd.plist || true
+fi
+
+echo "[Bakgrunnur] postinst complete."
 exit 0
