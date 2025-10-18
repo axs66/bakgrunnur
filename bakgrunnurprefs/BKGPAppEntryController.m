@@ -2,6 +2,7 @@
 #import "../BKGShared.h"
 #import "BKGPAppEntryController.h"
 #import "BKGPApplicationListSubcontrollerController.h"
+#import "NSString+Regex.h"
 
 @implementation BKGPAppEntryController
 
@@ -18,12 +19,30 @@ static void refreshSpecifiers() {
 	return self;
 }
 
+- (instancetype)initWithSpecifier:(PSSpecifier *)specifier {
+	if ((self = [super initWithSpecifier:specifier])) {
+		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)refreshSpecifiers, (CFStringRef)RELOAD_SPECIFIERS_NOTIFICATION_NAME, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSpecifiers:) name:RELOAD_SPECIFIERS_LOCAL_NOTIFICATION_NAME object:nil];
+	}
+	return self;
+}
+
 - (void)refreshSpecifiers:(NSNotification *)notification{
 	[self reloadSpecifiers];
 }
 
 - (NSArray *)specifiers {
     if (!_specifiers) {
+        
+        // Extract identifier and app name from specifier
+        if (self.specifier && self.specifier.identifier) {
+            self.identifier = self.specifier.identifier;
+            self.appName = self.specifier.label ?: self.specifier.identifier;
+        } else {
+            self.identifier = @"unknown";
+            self.appName = @"Unknown App";
+        }
         
         _expanded = NO;
         _manuallyExpanded = NO;
@@ -47,7 +66,7 @@ static void refreshSpecifiers() {
         
         //Enabled notification
         PSSpecifier *enabledAppNotificationsGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [enabledAppNotificationsGroupSpec setProperty:[NSString stringWithFormat:@"允许 %@ 在被 Bakgrunnur 后台管理时继续发送通知。", self.title] forKey:@"footerText"];
+        [enabledAppNotificationsGroupSpec setProperty:[NSString stringWithFormat:@"允许 %@ 在被 Bakgrunnur 后台管理时继续发送通知。", self.appName] forKey:@"footerText"];
         [_expandableSpecifiers addObject:enabledAppNotificationsGroupSpec];
         
         PSSpecifier *enabledAppNotificationsSpec = [PSSpecifier preferenceSpecifierNamed:@"通知 (测试版)" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
@@ -60,7 +79,7 @@ static void refreshSpecifiers() {
         
         //Persistence once
         PSSpecifier *persistenceOnceGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [persistenceOnceGroupSpec setProperty:[NSString stringWithFormat:@"保持 %@ 的\"启用一次\"令牌存活，除非通过应用切换器强制终止。当此设置被禁用时，每当 %@ 重新激活时令牌将被撤销。", self.title, self.title] forKey:@"footerText"];
+        [persistenceOnceGroupSpec setProperty:[NSString stringWithFormat:@"保持 %@ 的\"启用一次\"令牌存活，除非通过应用切换器强制终止。当此设置被禁用时，每当 %@ 重新激活时令牌将被撤销。", self.appName, self.appName] forKey:@"footerText"];
         [_expandableSpecifiers addObject:persistenceOnceGroupSpec];
         
         PSSpecifier *persistenceOnceSpec = [PSSpecifier preferenceSpecifierNamed:@"持久化一次令牌" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
@@ -73,7 +92,7 @@ static void refreshSpecifiers() {
         
         //Dark wake
         PSSpecifier *darkWakeGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [darkWakeGroupSpec setProperty:[NSString stringWithFormat:@"允许 %@ 在锁定时将设备置于半睡眠状态而不是完全睡眠。在此状态下，CPU、网络和磁盘读写将以全容量运行。当应用需要完整的网络/磁盘速度进行后台操作（文件下载、SSH等）时很有用。默认情况下，系统在锁定时会限制/禁用这些功能。", self.title] forKey:@"footerText"];
+        [darkWakeGroupSpec setProperty:[NSString stringWithFormat:@"允许 %@ 在锁定时将设备置于半睡眠状态而不是完全睡眠。在此状态下，CPU、网络和磁盘读写将以全容量运行。当应用需要完整的网络/磁盘速度进行后台操作（文件下载、SSH等）时很有用。默认情况下，系统在锁定时会限制/禁用这些功能。", self.appName] forKey:@"footerText"];
         [_expandableSpecifiers addObject:darkWakeGroupSpec];
         
         PSSpecifier *darkWakeSpec = [PSSpecifier preferenceSpecifierNamed:@"半睡眠" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
@@ -86,7 +105,7 @@ static void refreshSpecifiers() {
         
         //aggressive assertion
         PSSpecifier *aggressiveAssertionGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-        [aggressiveAssertionGroupSpec setProperty:[NSString stringWithFormat:@"积极地将 %@ 置于后台模式。启用此选项将防止 %@ 的UI被限制，并尝试使用所需的尽可能多的资源。", self.title, self.title] forKey:@"footerText"];
+        [aggressiveAssertionGroupSpec setProperty:[NSString stringWithFormat:@"积极地将 %@ 置于后台模式。启用此选项将防止 %@ 的UI被限制，并尝试使用所需的尽可能多的资源。", self.appName, self.appName] forKey:@"footerText"];
         [_expandableSpecifiers addObject:aggressiveAssertionGroupSpec];
         
         PSSpecifier *aggressiveAssertionSpec = [PSSpecifier preferenceSpecifierNamed:@"积极模式" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
@@ -99,7 +118,7 @@ static void refreshSpecifiers() {
         
 		//throttle cpu
 		PSSpecifier *cpuThrottleGroupSpec = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-		[cpuThrottleGroupSpec setProperty:[NSString stringWithFormat:@"在后台运行时限制 %@ 的CPU使用率。如果启用，上面的\"积极模式\"选项可能会被降级。默认为80%%。", self.title] forKey:@"footerText"];
+		[cpuThrottleGroupSpec setProperty:[NSString stringWithFormat:@"在后台运行时限制 %@ 的CPU使用率。如果启用，上面的\"积极模式\"选项可能会被降级。默认为80%%。", self.appName] forKey:@"footerText"];
 		[_expandableSpecifiers addObject:cpuThrottleGroupSpec];
 		
 		PSSpecifier *cpuThrottleSpecifier = [PSSpecifier preferenceSpecifierNamed:@"CPU限制" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
@@ -173,17 +192,17 @@ static void refreshSpecifiers() {
         
         //CPU Controller
         _cpuControllerSpecifier = [PSSpecifier preferenceSpecifierNamed:@"CPU" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppCPUController") cell:PSLinkCell edit:nil];
-        [_cpuControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-cpu-[%@]", self.specifier.identifier, self.title] forKey:@"id"];
+        [_cpuControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-cpu-[%@]", self.identifier, self.appName] forKey:@"id"];
         [_expandableSpecifiers addObject:_cpuControllerSpecifier];
         
         //System Calls Controller
         _systemCallsControllerSpecifier = [PSSpecifier preferenceSpecifierNamed:@"系统调用" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppSystemCallsController") cell:PSLinkCell edit:nil];
-        [_systemCallsControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-systemcalls-[%@]", self.specifier.identifier, self.title] forKey:@"id"];
+        [_systemCallsControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-systemcalls-[%@]", self.identifier, self.appName] forKey:@"id"];
         [_expandableSpecifiers addObject:_systemCallsControllerSpecifier];
         
         //Network Controller
         _networkControllerSpecifier = [PSSpecifier preferenceSpecifierNamed:@"网络" target:nil set:nil get:nil detail:NSClassFromString(@"BKGPAppNetworkController") cell:PSLinkCell edit:nil];
-        [_networkControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-network-[%@]", self.specifier.identifier, self.title] forKey:@"id"];
+        [_networkControllerSpecifier setProperty:[NSString stringWithFormat:@"%@-bakgrunnur-app-network-[%@]", self.identifier, self.appName] forKey:@"id"];
         [_expandableSpecifiers addObject:_networkControllerSpecifier];
         
         
@@ -203,11 +222,11 @@ static void refreshSpecifiers() {
 	
 	if (_cpuThrottleWarningShown) return NO;
 	
-	double throttlePercentage = [valueForConfigKey(self.specifier.identifier, @"throttlePercentage", @50) doubleValue];
-	double cpuUsageThreshold = [valueForConfigKey(self.specifier.identifier, @"cpuUsageThreshold", @(0.5)) doubleValue];
-	BOOL cpuThrottleEnabled = [valueForConfigKey(self.specifier.identifier, @"cpuThrottleEnabled", @NO) boolValue];
-	BOOL cpuUsageEnabled = [valueForConfigKey(self.specifier.identifier, @"cpuUsageEnabled", @NO) boolValue];
-	BKGBackgroundType type = [valueForConfigKey(self.specifier.identifier, @"retire", @(BKGBackgroundTypeRetire)) unsignedLongValue];
+	double throttlePercentage = [valueForConfigKey(self.identifier, @"throttlePercentage", @50) doubleValue];
+	double cpuUsageThreshold = [valueForConfigKey(self.identifier, @"cpuUsageThreshold", @(0.5)) doubleValue];
+	BOOL cpuThrottleEnabled = [valueForConfigKey(self.identifier, @"cpuThrottleEnabled", @NO) boolValue];
+	BOOL cpuUsageEnabled = [valueForConfigKey(self.identifier, @"cpuUsageEnabled", @NO) boolValue];
+	BKGBackgroundType type = [valueForConfigKey(self.identifier, @"retire", @(BKGBackgroundTypeRetire)) unsignedLongValue];
 	
 	if (type != BKGBackgroundTypeAdvanced) return NO;
 	
@@ -240,7 +259,7 @@ static void refreshSpecifiers() {
 
 - (id)readPreferenceValue:(PSSpecifier*)specifier {
     NSString *key = [specifier propertyForKey:@"key"];
-    id value = valueForConfigKey(self.specifier.identifier, key, specifier.properties[@"default"]);
+    id value = valueForConfigKey(self.identifier, key, specifier.properties[@"default"]);
     return value;
 }
 
@@ -248,7 +267,7 @@ static void refreshSpecifiers() {
     UIViewController *parentController = (UIViewController *)[self valueForKey:@"_parentController"];
     if ([parentController respondsToSelector:@selector(specifierForApplicationWithIdentifier:)]){
         [(BKGPApplicationListSubcontrollerController *)parentController updateIvars];
-        [(BKGPApplicationListSubcontrollerController *)parentController reloadSpecifier:[(BKGPApplicationListSubcontrollerController *)parentController specifierForApplicationWithIdentifier:self.specifier.identifier] animated:YES];
+        [(BKGPApplicationListSubcontrollerController *)parentController reloadSpecifier:[(BKGPApplicationListSubcontrollerController *)parentController specifierForApplicationWithIdentifier:self.identifier] animated:YES];
     }
 }
 
@@ -294,7 +313,7 @@ static void refreshSpecifiers() {
 		[self reloadSpecifier:_cpuThrottlePercentageSpecifier animated:YES];
 	}
     
-    setValueForConfigKey(self.specifier.identifier, key, value);
+    setValueForConfigKey(self.identifier, key, value);
 	
 	if ([key isEqualToString:@"cpuThrottleEnabled"] || [key isEqualToString:@"retire"]){
 		[self showCPUThrottleWarningIfNecessary];
@@ -316,7 +335,7 @@ static void refreshSpecifiers() {
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    BKGBackgroundType backgroundType = unsignedLongValueForConfigKey(self.specifier.identifier, @"retire", BKGBackgroundTypeRetire);
+    BKGBackgroundType backgroundType = unsignedLongValueForConfigKey(self.identifier, @"retire", BKGBackgroundTypeRetire);
     if (backgroundType == BKGBackgroundTypeImmortal){
         _isAdvanced = NO;
         [_expirationSpecifier setProperty:@NO forKey:@"enabled"];
@@ -345,7 +364,7 @@ static void refreshSpecifiers() {
     [self reloadSpecifier:_networkControllerSpecifier animated:YES];
     [self reloadSpecifier:_timeSpanSpecifier animated:YES];
 	
-	BOOL cpuThrottleEnabled = boolValueForConfigKey(self.specifier.identifier, @"cpuThrottleEnabled", NO);
+	BOOL cpuThrottleEnabled = boolValueForConfigKey(self.identifier, @"cpuThrottleEnabled", NO);
 	[_cpuThrottlePercentageSpecifier setProperty:@(cpuThrottleEnabled) forKey:@"enabled"];
 	[self reloadSpecifier:_cpuThrottlePercentageSpecifier animated:YES];
 	
