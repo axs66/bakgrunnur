@@ -49,18 +49,18 @@ static void refreshSpecifiers() {
     
     if (seconds < 60){
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@秒", [formatter stringFromNumber:@(seconds)], seconds > 1 ? @"secs" : @"sec"];
+        return [NSString stringWithFormat:@"%@秒", [formatter stringFromNumber:@(seconds)]];
     }else if (seconds < 3600){
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@分钟", [formatter stringFromNumber:@(seconds/60.0)], seconds/60.0 > 1 ? @"mins" : @"min"];
+        return [NSString stringWithFormat:@"%@分钟", [formatter stringFromNumber:@(seconds/60.0)]];
     }else if (fmod(seconds, 60.0) > 0){
         formatter.numberStyle = NSNumberFormatterDecimalStyle;
         formatter.maximumFractionDigits = 1;
         formatter.roundingMode = NSNumberFormatterRoundUp;
-        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)], seconds/3600.0 > 1 ? @"hours" : @"hour"];
+        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)]];
     }else{
         formatter.numberStyle = NSNumberFormatterNoStyle;
-        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)], seconds/3600.0 > 1 ? @"hours" : @"hour"];
+        return [NSString stringWithFormat:@"%@小时", [formatter stringFromNumber:@(seconds/3600.0)]];
     }
 }
 
@@ -148,10 +148,3 @@ static void refreshSpecifiers() {
 }
 @end
 
-#if !__has_include(<AltList/ATLApplicationListSubcontrollerController.h>)
-@implementation ATLApplicationListSubcontrollerController
-- (PSSpecifier *)specifierForApplicationWithIdentifier:(NSString *)identifier{
-    return nil;
-}
-@end
-#endif
