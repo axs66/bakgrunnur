@@ -194,7 +194,6 @@ static void refreshSpecifiers() {
         _expanded = YES;
         
         _specifiers = appEntrySpecifiers;
-        
     }
     
     return _specifiers;
