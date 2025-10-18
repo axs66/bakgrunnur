@@ -16,7 +16,7 @@
 #define BAKGRUNNUR_IDENTIFIER @"com.udevs.bakgrunnur"
 #define PREFS_CHANGED_NOTIFICATION_NAME @"com.udevs.bakgrunnur.prefschanged"
 #define CLI_REQUEST_NOTIFICATION_NAME @"com.udevs.bakgrunnur.cli"
-#define PREFS_PATH @"/var/mobile/Library/Preferences/com.udevs.bakgrunnur.plist"
+#define PREFS_PATH @"/var/jb/var/mobile/Library/Preferences/com.udevs.bakgrunnur.plist"
 
 #define REFRESH_MODULE_NOTIFICATION_NAME @"com.udevs.bakgrunnur/refreshmodule"
 #define RELOAD_SPECIFIERS_NOTIFICATION_NAME @"com.udevs.bakgrunnur.reloadspecifiers"
