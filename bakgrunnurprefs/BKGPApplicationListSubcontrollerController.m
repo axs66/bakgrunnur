@@ -81,13 +81,92 @@ static void refreshSpecifiers() {
     PSSpecifier *groupSpec = [PSSpecifier preferenceSpecifierNamed:@"已安装的应用" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
     [specifiers addObject:groupSpec];
     
-    // Add a note about AltList requirement
-    PSSpecifier *noteSpec = [PSSpecifier preferenceSpecifierNamed:@"需要安装 AltList 框架" target:nil set:nil get:nil detail:nil cell:PSStaticTextCell edit:nil];
-    [noteSpec setProperty:@"请安装 AltList 框架以显示应用列表" forKey:@"footerText"];
-    [specifiers addObject:noteSpec];
+    // Get installed applications
+    NSArray *installedApps = [self getInstalledApplications];
+    
+    if (installedApps.count > 0) {
+        // Add each application as a specifier
+        for (NSDictionary *appInfo in installedApps) {
+            NSString *bundleId = appInfo[@"bundleIdentifier"];
+            NSString *displayName = appInfo[@"displayName"];
+            
+            if (bundleId && displayName) {
+                PSSpecifier *appSpec = [PSSpecifier preferenceSpecifierNamed:displayName 
+                                                                     target:nil 
+                                                                        set:@selector(setPreferenceValue:specifier:) 
+                                                                        get:@selector(readPreferenceValue:) 
+                                                                    detail:NSClassFromString(@"BKGPAppEntryController") 
+                                                                       cell:PSLinkListCell 
+                                                                       edit:nil];
+                [appSpec setProperty:bundleId forKey:@"identifier"];
+                [appSpec setProperty:displayName forKey:@"label"];
+                // Set the identifier property directly
+                appSpec.identifier = bundleId;
+                [specifiers addObject:appSpec];
+            }
+        }
+    } else {
+        // Add a note about AltList requirement
+        PSSpecifier *noteSpec = [PSSpecifier preferenceSpecifierNamed:@"需要安装 AltList 框架" target:nil set:nil get:nil detail:nil cell:PSStaticTextCell edit:nil];
+        [noteSpec setProperty:@"请安装 AltList 框架以显示应用列表" forKey:@"footerText"];
+        [specifiers addObject:noteSpec];
+    }
     
     // Set specifiers using the proper PSListController method
     [self setSpecifiers:specifiers];
+}
+
+- (NSArray *)getInstalledApplications {
+    NSMutableArray *apps = [NSMutableArray array];
+    
+    // Try to get applications using LSApplicationWorkspace
+    Class LSApplicationWorkspace = NSClassFromString(@"LSApplicationWorkspace");
+    if (LSApplicationWorkspace) {
+        id workspace = [LSApplicationWorkspace performSelector:@selector(defaultWorkspace)];
+        if (workspace) {
+            NSArray *proxies = [workspace performSelector:@selector(allInstalledApplications)];
+            for (id proxy in proxies) {
+                NSString *bundleId = [proxy performSelector:@selector(bundleIdentifier)];
+                NSString *displayName = [proxy performSelector:@selector(localizedName)];
+                
+                if (bundleId && displayName) {
+                    [apps addObject:@{
+                        @"bundleIdentifier": bundleId,
+                        @"displayName": displayName
+                    }];
+                }
+            }
+        }
+    }
+    
+    // Fallback: try to get from /Applications directory
+    if (apps.count == 0) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSArray *appPaths = [fileManager contentsOfDirectoryAtPath:@"/Applications" error:nil];
+        
+        for (NSString *appPath in appPaths) {
+            if ([appPath hasSuffix:@".app"]) {
+                NSString *fullPath = [@"/Applications" stringByAppendingPathComponent:appPath];
+                NSString *bundleId = [self getBundleIdentifierFromAppPath:fullPath];
+                NSString *displayName = [appPath stringByDeletingPathExtension];
+                
+                if (bundleId) {
+                    [apps addObject:@{
+                        @"bundleIdentifier": bundleId,
+                        @"displayName": displayName
+                    }];
+                }
+            }
+        }
+    }
+    
+    return [apps copy];
+}
+
+- (NSString *)getBundleIdentifierFromAppPath:(NSString *)appPath {
+    NSString *infoPlistPath = [appPath stringByAppendingPathComponent:@"Info.plist"];
+    NSDictionary *infoPlist = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath];
+    return infoPlist[@"CFBundleIdentifier"];
 }
 
 // Forward method calls to AltList controller if available
