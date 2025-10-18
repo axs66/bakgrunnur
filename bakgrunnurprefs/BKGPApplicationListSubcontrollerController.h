@@ -1,10 +1,13 @@
 #import "../common.h"
 
-#import <AltList/ATLApplicationListSubcontrollerController.h>
+// Forward declaration to avoid compile-time dependency on AltList
+@class ATLApplicationListSubcontrollerController;
 
-@interface BKGPApplicationListSubcontrollerController : ATLApplicationListSubcontrollerController{
+@interface BKGPApplicationListSubcontrollerController : NSObject {
     NSMutableDictionary *_prefs;
     NSArray *_allEntriesIdentifier;
 }
 -(void)updateIvars;
+-(void)loadPreferences;
+-(void)createBasicAppList;
 @end
