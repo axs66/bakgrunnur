@@ -11,11 +11,11 @@
 	</dict>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/libexec/bkgd</string>
+		<string>/var/jb/usr/libexec/bkgd</string>
 	</array>
 	<key>KeepAlive</key>
 	<true/>
 	<key>UserName</key>
-	<string>root</string>
+	<string>mobile</string>
 </dict>
 </plist>
