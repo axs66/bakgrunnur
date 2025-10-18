@@ -23,7 +23,7 @@ static void refreshSpecifiers() {
 }
 
 - (instancetype)initWithSpecifier:(PSSpecifier *)specifier {
-    if ((self = [super initWithSpecifier:specifier])) {
+    if ((self = [super init])) {
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)refreshSpecifiers, (CFStringRef)RELOAD_SPECIFIERS_NOTIFICATION_NAME, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSpecifiers:) name:RELOAD_SPECIFIERS_LOCAL_NOTIFICATION_NAME object:nil];
@@ -61,7 +61,7 @@ static void refreshSpecifiers() {
                 if ([_altListController respondsToSelector:@selector(specifiers)]) {
                     NSArray *specifiers = [_altListController performSelector:@selector(specifiers)];
                     if (specifiers) {
-                        [self setSpecifiers:specifiers];
+                        [self setSpecifiers:[specifiers mutableCopy]];
                     }
                 }
             }
