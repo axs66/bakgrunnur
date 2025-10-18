@@ -33,15 +33,19 @@ static void refreshSpecifiers() {
 }
 
 - (NSArray *)specifiers {
+    NSLog(@"[BKGPAppEntryController] specifiers method called");
     if (!_specifiers) {
+        NSLog(@"[BKGPAppEntryController] Creating new specifiers");
         
         // Extract identifier and app name from specifier
         if (self.specifier && self.specifier.identifier) {
             self.identifier = self.specifier.identifier;
             self.appName = [self.specifier propertyForKey:@"label"] ?: self.specifier.identifier;
+            NSLog(@"[BKGPAppEntryController] App: %@ (%@)", self.appName, self.identifier);
         } else {
             self.identifier = @"unknown";
             self.appName = @"Unknown App";
+            NSLog(@"[BKGPAppEntryController] No specifier found, using defaults");
         }
         
         _expanded = NO;
@@ -213,8 +217,10 @@ static void refreshSpecifiers() {
         _expanded = YES;
         
         _specifiers = appEntrySpecifiers;
+        NSLog(@"[BKGPAppEntryController] Created %lu specifiers", (unsigned long)[_specifiers count]);
     }
     
+    NSLog(@"[BKGPAppEntryController] Returning %lu specifiers", (unsigned long)[_specifiers count]);
     return _specifiers;
 }
 
@@ -335,6 +341,9 @@ static void refreshSpecifiers() {
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    NSLog(@"[BKGPAppEntryController] viewWillAppear called");
+    [super viewWillAppear:animated];
+    
     BKGBackgroundType backgroundType = unsignedLongValueForConfigKey(self.identifier, @"retire", BKGBackgroundTypeRetire);
     if (backgroundType == BKGBackgroundTypeImmortal){
         _isAdvanced = NO;
@@ -394,16 +403,21 @@ static void refreshSpecifiers() {
 
 -(void)viewDidLoad{
     [super viewDidLoad];
+    NSLog(@"[BKGPAppEntryController] viewDidLoad called");
     
     // Ensure specifier is set up properly
     if (self.specifier && self.specifier.identifier) {
         self.identifier = self.specifier.identifier;
         self.appName = [self.specifier propertyForKey:@"label"] ?: self.specifier.identifier;
+        NSLog(@"[BKGPAppEntryController] viewDidLoad - App: %@ (%@)", self.appName, self.identifier);
+    } else {
+        NSLog(@"[BKGPAppEntryController] viewDidLoad - No specifier found");
     }
 }
 
 -(void)loadView{
     [super loadView];
+    NSLog(@"[BKGPAppEntryController] loadView called");
     self.table.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
 }
 
