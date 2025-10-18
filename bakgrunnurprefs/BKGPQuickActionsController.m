@@ -101,14 +101,14 @@
 }
 
 - (id)readPreferenceValueForKey:(NSString *)key defaultValue:(id)defaultVal{
-    NSString *path = [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", BAKGRUNNUR_IDENTIFIER];
+    NSString *path = [NSString stringWithFormat:@"/var/jb/var/mobile/Library/Preferences/%@.plist", BAKGRUNNUR_IDENTIFIER];
     NSMutableDictionary *settings = [NSMutableDictionary dictionary];
     [settings addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:path]];
     return (settings[key]) ?: defaultVal;
 }
 
 - (void)setPreferenceValue:(id)value forKey:(NSString *)key{
-    NSString *path = [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", BAKGRUNNUR_IDENTIFIER];
+    NSString *path = [NSString stringWithFormat:@"/var/jb/var/mobile/Library/Preferences/%@.plist", BAKGRUNNUR_IDENTIFIER];
     NSMutableDictionary *settings = [NSMutableDictionary dictionary];
     [settings addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:path]];
     [settings setObject:value forKey:key];
