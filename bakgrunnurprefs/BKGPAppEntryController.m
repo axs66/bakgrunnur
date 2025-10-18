@@ -20,7 +20,7 @@ static void refreshSpecifiers() {
 }
 
 - (instancetype)initWithSpecifier:(PSSpecifier *)specifier {
-	if ((self = [super initWithSpecifier:specifier])) {
+	if ((self = [super init])) {
 		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)refreshSpecifiers, (CFStringRef)RELOAD_SPECIFIERS_NOTIFICATION_NAME, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSpecifiers:) name:RELOAD_SPECIFIERS_LOCAL_NOTIFICATION_NAME object:nil];
@@ -38,7 +38,7 @@ static void refreshSpecifiers() {
         // Extract identifier and app name from specifier
         if (self.specifier && self.specifier.identifier) {
             self.identifier = self.specifier.identifier;
-            self.appName = self.specifier.label ?: self.specifier.identifier;
+            self.appName = [self.specifier propertyForKey:@"label"] ?: self.specifier.identifier;
         } else {
             self.identifier = @"unknown";
             self.appName = @"Unknown App";
@@ -389,6 +389,16 @@ static void refreshSpecifiers() {
     }else if (!expands && _expanded){
         [self removeContiguousSpecifiers:_expandableSpecifiers animated:YES];
         _expanded = NO;
+    }
+}
+
+-(void)viewDidLoad{
+    [super viewDidLoad];
+    
+    // Ensure specifier is set up properly
+    if (self.specifier && self.specifier.identifier) {
+        self.identifier = self.specifier.identifier;
+        self.appName = [self.specifier propertyForKey:@"label"] ?: self.specifier.identifier;
     }
 }
 
