@@ -41,7 +41,6 @@ static void refreshSpecifiers() {
 
 - (void)loadPreferences{
     [self updateIvars];
-    [super loadPreferences];
 }
 
 
