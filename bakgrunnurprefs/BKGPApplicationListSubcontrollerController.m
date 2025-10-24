@@ -1,13 +1,7 @@
 #import "BKGPApplicationListSubcontrollerController.h"
 #import "../BKGShared.h"
-#import <HBLog.h>
-#import <Preferences/PSListController.h>
-#import <Preferences/PSSpecifier.h>
-#import <Preferences/PSTableCell.h>
 
-@implementation BKGPApplicationListSubcontrollerController {
-    id _altListController;
-}
+@implementation BKGPApplicationListSubcontrollerController
 
 static void refreshSpecifiers() {
 	[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_SPECIFIERS_LOCAL_NOTIFICATION_NAME object:nil];
