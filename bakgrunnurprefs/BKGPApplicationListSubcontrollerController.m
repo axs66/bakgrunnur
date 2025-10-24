@@ -43,6 +43,20 @@ static void refreshSpecifiers() {
     [self updateIvars];
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self loadPreferences];
+}
+
+- (NSArray *)specifiers {
+    if (!_specifiers) {
+        [self loadPreferences];
+        // Let the system handle the specifiers for application list
+        _specifiers = [super specifiers];
+    }
+    return _specifiers;
+}
+
 
 - (NSString*)previewStringForApplicationWithIdentifier:(NSString *)applicationID{
     return [self previewForApplication:applicationID];
