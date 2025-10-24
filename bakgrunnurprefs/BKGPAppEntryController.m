@@ -212,9 +212,10 @@ static void refreshSpecifiers() {
         
         [appEntrySpecifiers addObjectsFromArray:_staticSpecifiers];
         
-        // Always show all options, not just when enabled
-        [appEntrySpecifiers addObjectsFromArray:_expandableSpecifiers];
-        _expanded = YES;
+        if ([[self readPreferenceValue:_enabledEntrySpecifier] boolValue]){
+            [appEntrySpecifiers addObjectsFromArray:_expandableSpecifiers];
+            _expanded = YES;
+        }
         
         _specifiers = appEntrySpecifiers;
         NSLog(@"[BKGPAppEntryController] Created %lu specifiers", (unsigned long)[_specifiers count]);
@@ -228,11 +229,11 @@ static void refreshSpecifiers() {
 	
 	if (_cpuThrottleWarningShown) return NO;
 	
-	double throttlePercentage = [valueForConfigKey(self.identifier, @"throttlePercentage", @50) doubleValue];
-	double cpuUsageThreshold = [valueForConfigKey(self.identifier, @"cpuUsageThreshold", @(0.5)) doubleValue];
-	BOOL cpuThrottleEnabled = [valueForConfigKey(self.identifier, @"cpuThrottleEnabled", @NO) boolValue];
-	BOOL cpuUsageEnabled = [valueForConfigKey(self.identifier, @"cpuUsageEnabled", @NO) boolValue];
-	BKGBackgroundType type = [valueForConfigKey(self.identifier, @"retire", @(BKGBackgroundTypeRetire)) unsignedLongValue];
+	double throttlePercentage = [valueForConfigKey(self.specifier.identifier, @"throttlePercentage", @50) doubleValue];
+	double cpuUsageThreshold = [valueForConfigKey(self.specifier.identifier, @"cpuUsageThreshold", @(0.5)) doubleValue];
+	BOOL cpuThrottleEnabled = [valueForConfigKey(self.specifier.identifier, @"cpuThrottleEnabled", @NO) boolValue];
+	BOOL cpuUsageEnabled = [valueForConfigKey(self.specifier.identifier, @"cpuUsageEnabled", @NO) boolValue];
+	BKGBackgroundType type = [valueForConfigKey(self.specifier.identifier, @"retire", @(BKGBackgroundTypeRetire)) unsignedLongValue];
 	
 	if (type != BKGBackgroundTypeAdvanced) return NO;
 	
@@ -265,7 +266,7 @@ static void refreshSpecifiers() {
 
 - (id)readPreferenceValue:(PSSpecifier*)specifier {
     NSString *key = [specifier propertyForKey:@"key"];
-    id value = valueForConfigKey(self.identifier, key, specifier.properties[@"default"]);
+    id value = valueForConfigKey(self.specifier.identifier, key, specifier.properties[@"default"]);
     return value;
 }
 
@@ -273,7 +274,7 @@ static void refreshSpecifiers() {
     UIViewController *parentController = (UIViewController *)[self valueForKey:@"_parentController"];
     if ([parentController respondsToSelector:@selector(specifierForApplicationWithIdentifier:)]){
         [(BKGPApplicationListSubcontrollerController *)parentController updateIvars];
-        [(BKGPApplicationListSubcontrollerController *)parentController reloadSpecifier:[(BKGPApplicationListSubcontrollerController *)parentController specifierForApplicationWithIdentifier:self.identifier] animated:YES];
+        [(BKGPApplicationListSubcontrollerController *)parentController reloadSpecifier:[(BKGPApplicationListSubcontrollerController *)parentController specifierForApplicationWithIdentifier:self.specifier.identifier] animated:YES];
     }
 }
 
@@ -319,7 +320,7 @@ static void refreshSpecifiers() {
 		[self reloadSpecifier:_cpuThrottlePercentageSpecifier animated:YES];
 	}
     
-    setValueForConfigKey(self.identifier, key, value);
+    setValueForConfigKey(self.specifier.identifier, key, value);
 	
 	if ([key isEqualToString:@"cpuThrottleEnabled"] || [key isEqualToString:@"retire"]){
 		[self showCPUThrottleWarningIfNecessary];
@@ -344,7 +345,7 @@ static void refreshSpecifiers() {
     NSLog(@"[BKGPAppEntryController] viewWillAppear called");
     [super viewWillAppear:animated];
     
-    BKGBackgroundType backgroundType = unsignedLongValueForConfigKey(self.identifier, @"retire", BKGBackgroundTypeRetire);
+    BKGBackgroundType backgroundType = unsignedLongValueForConfigKey(self.specifier.identifier, @"retire", BKGBackgroundTypeRetire);
     if (backgroundType == BKGBackgroundTypeImmortal){
         _isAdvanced = NO;
         [_expirationSpecifier setProperty:@NO forKey:@"enabled"];
@@ -373,7 +374,7 @@ static void refreshSpecifiers() {
     [self reloadSpecifier:_networkControllerSpecifier animated:YES];
     [self reloadSpecifier:_timeSpanSpecifier animated:YES];
 	
-	BOOL cpuThrottleEnabled = boolValueForConfigKey(self.identifier, @"cpuThrottleEnabled", NO);
+	BOOL cpuThrottleEnabled = boolValueForConfigKey(self.specifier.identifier, @"cpuThrottleEnabled", NO);
 	[_cpuThrottlePercentageSpecifier setProperty:@(cpuThrottleEnabled) forKey:@"enabled"];
 	[self reloadSpecifier:_cpuThrottlePercentageSpecifier animated:YES];
 	
@@ -404,15 +405,6 @@ static void refreshSpecifiers() {
 -(void)viewDidLoad{
     [super viewDidLoad];
     NSLog(@"[BKGPAppEntryController] viewDidLoad called");
-    
-    // Ensure specifier is set up properly
-    if (self.specifier && self.specifier.identifier) {
-        self.identifier = self.specifier.identifier;
-        self.appName = [self.specifier propertyForKey:@"label"] ?: self.specifier.identifier;
-        NSLog(@"[BKGPAppEntryController] viewDidLoad - App: %@ (%@)", self.appName, self.identifier);
-    } else {
-        NSLog(@"[BKGPAppEntryController] viewDidLoad - No specifier found");
-    }
 }
 
 -(void)loadView{
