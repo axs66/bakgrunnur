@@ -272,9 +272,9 @@ static void refreshSpecifiers() {
 
 -(void)updateParentViewController{
     UIViewController *parentController = (UIViewController *)[self valueForKey:@"_parentController"];
-    if ([parentController respondsToSelector:@selector(specifierForApplicationWithIdentifier:)]){
+    if ([parentController isKindOfClass:[BKGPApplicationListSubcontrollerController class]]){
         [(BKGPApplicationListSubcontrollerController *)parentController updateIvars];
-        [(BKGPApplicationListSubcontrollerController *)parentController reloadSpecifier:[(BKGPApplicationListSubcontrollerController *)parentController specifierForApplicationWithIdentifier:self.specifier.identifier] animated:YES];
+        [(BKGPApplicationListSubcontrollerController *)parentController reloadSpecifiers];
     }
 }
 
