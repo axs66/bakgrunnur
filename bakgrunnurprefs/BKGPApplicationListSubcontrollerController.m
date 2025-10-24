@@ -1,5 +1,7 @@
 #import "BKGPApplicationListSubcontrollerController.h"
 #import "../BKGShared.h"
+#import <Preferences/PSListController.h>
+#import <Preferences/PSSpecifier.h>
 
 @implementation BKGPApplicationListSubcontrollerController
 
@@ -41,6 +43,19 @@ static void refreshSpecifiers() {
 
 - (void)loadPreferences{
     [self updateIvars];
+    
+    // Try to load AltList framework dynamically at runtime
+    NSBundle *altListBundle = [NSBundle bundleWithPath:@"/var/jb/Library/Frameworks/AltList.framework"];
+    if (altListBundle && [altListBundle load]) {
+        // AltList is available, create AltList controller dynamically
+        Class altListClass = NSClassFromString(@"ATLApplicationListSubcontrollerController");
+        if (altListClass) {
+            _altListController = [[altListClass alloc] init];
+            if ([_altListController respondsToSelector:@selector(loadPreferences)]) {
+                [_altListController performSelector:@selector(loadPreferences)];
+            }
+        }
+    }
 }
 
 - (void)viewDidLoad {
@@ -48,13 +63,109 @@ static void refreshSpecifiers() {
     [self loadPreferences];
 }
 
+
+- (void)reloadSpecifiers {
+    if (_altListController && [_altListController respondsToSelector:@selector(reloadSpecifiers)]) {
+        [_altListController performSelector:@selector(reloadSpecifiers)];
+    } else {
+        [super reloadSpecifiers];
+    }
+}
+
+// Forward method calls to AltList controller if available
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    if (_altListController && [_altListController respondsToSelector:aSelector]) {
+        return _altListController;
+    }
+    return [super forwardingTargetForSelector:aSelector];
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    if (_altListController && [_altListController respondsToSelector:aSelector]) {
+        return YES;
+    }
+    return [super respondsToSelector:aSelector];
+}
+
 - (NSArray *)specifiers {
     if (!_specifiers) {
         [self loadPreferences];
-        // Let the system handle the specifiers for application list
-        _specifiers = [super specifiers];
+        
+        // Try to use AltList if available
+        if (_altListController && [_altListController respondsToSelector:@selector(specifiers)]) {
+            NSArray *altListSpecifiers = [_altListController performSelector:@selector(specifiers)];
+            if (altListSpecifiers) {
+                _specifiers = altListSpecifiers;
+                return _specifiers;
+            }
+        }
+        
+        // Fallback: Create a basic application list
+        NSMutableArray *specifiers = [NSMutableArray array];
+        
+        // Add a group header
+        PSSpecifier *groupSpec = [PSSpecifier preferenceSpecifierNamed:@"已安装的应用" target:nil set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+        [specifiers addObject:groupSpec];
+        
+        // Get installed applications
+        NSArray *installedApps = [self getInstalledApplications];
+        
+        if (installedApps.count > 0) {
+            // Add each application as a specifier
+            for (NSDictionary *appInfo in installedApps) {
+                NSString *bundleId = appInfo[@"bundleIdentifier"];
+                NSString *displayName = appInfo[@"displayName"];
+                
+                if (bundleId && displayName) {
+                    PSSpecifier *appSpec = [PSSpecifier preferenceSpecifierNamed:displayName 
+                                                                         target:nil 
+                                                                            set:@selector(setPreferenceValue:specifier:) 
+                                                                            get:@selector(readPreferenceValue:) 
+                                                                        detail:NSClassFromString(@"BKGPAppEntryController") 
+                                                                           cell:PSLinkCell 
+                                                                           edit:nil];
+                    [appSpec setProperty:bundleId forKey:@"identifier"];
+                    [appSpec setProperty:displayName forKey:@"label"];
+                    appSpec.identifier = bundleId;
+                    [specifiers addObject:appSpec];
+                }
+            }
+        } else {
+            // Add a note about no apps found
+            PSSpecifier *noteSpec = [PSSpecifier preferenceSpecifierNamed:@"未找到应用" target:nil set:nil get:nil detail:nil cell:PSStaticTextCell edit:nil];
+            [noteSpec setProperty:@"无法获取已安装的应用列表" forKey:@"footerText"];
+            [specifiers addObject:noteSpec];
+        }
+        
+        _specifiers = [specifiers copy];
     }
     return _specifiers;
+}
+
+- (NSArray *)getInstalledApplications {
+    NSMutableArray *apps = [NSMutableArray array];
+    
+    // Try to get applications using LSApplicationWorkspace
+    Class LSApplicationWorkspace = NSClassFromString(@"LSApplicationWorkspace");
+    if (LSApplicationWorkspace) {
+        id workspace = [LSApplicationWorkspace performSelector:@selector(defaultWorkspace)];
+        if (workspace) {
+            NSArray *proxies = [workspace performSelector:@selector(allInstalledApplications)];
+            for (id proxy in proxies) {
+                NSString *bundleId = [proxy performSelector:@selector(bundleIdentifier)];
+                NSString *displayName = [proxy performSelector:@selector(localizedName)];
+                
+                if (bundleId && displayName) {
+                    [apps addObject:@{
+                        @"bundleIdentifier": bundleId,
+                        @"displayName": displayName
+                    }];
+                }
+            }
+        }
+    }
+    
+    return [apps copy];
 }
 
 
